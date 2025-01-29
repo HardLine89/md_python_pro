@@ -1,24 +1,26 @@
 from pathlib import Path
-from typing import List, ClassVar
+from typing import List, ClassVar, Dict
 
+from django.conf import global_settings
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings
 
 
 class DjangoSettings(BaseSettings):
-    DB_NAME: str = Field(env="DB_NAME")
-    DB_USER: str = Field(env="DB_USER")
-    DB_PASS: str = Field(env="DB_PASS")
+    DB_NAME: str = Field(env="DB_NAME", default="postgres")
+    DB_USER: str = Field(env="DB_USER", default="admin")
+    DB_PASS: str = Field(env="DB_PASS", default="120666")
     DB_HOST: str = Field(env="DB_HOST", default="localhost")
     DB_PORT: int = Field(env="DB_PORT", default=5432)
 
-    SECRET_KEY: SecretStr
+    SECRET_KEY: str
     DEBUG: bool = True
     ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1"]
     BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
 
     @property
-    def DATABASES(self) -> dict:
+    def DATABASES(self) -> Dict[str, Dict[str, str | int]]:
+        """Динамически вычисляемый словарь DATABASES."""
         return {
             "default": {
                 "ENGINE": "django.db.backends.postgresql",
