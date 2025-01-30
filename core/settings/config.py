@@ -1,4 +1,4 @@
-from pathlib import Path
+from pathlib import Path, PosixPath
 from typing import List, ClassVar, Dict
 
 from django.conf import global_settings
@@ -95,6 +95,8 @@ class DjangoSettings(BaseSettings):
     USE_TZ: bool = True
 
     STATIC_URL: str = "static/"
+    # STATICFILES_DIRS: List[PosixPath] = [BASE_DIR / "static"]
+    STATIC_ROOT: PosixPath = BASE_DIR / "static"
 
     DEFAULT_AUTO_FIELD: str = "django.db.models.BigAutoField"
 
