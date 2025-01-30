@@ -39,6 +39,7 @@ class DjangoSettings(BaseSettings):
         "django.contrib.sessions",
         "django.contrib.messages",
         "django.contrib.staticfiles",
+        "blog",
     ]
 
     MIDDLEWARE: List[str] = [
