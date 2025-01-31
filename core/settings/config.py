@@ -1,7 +1,5 @@
 from pathlib import Path, PosixPath
-from typing import List, ClassVar, Dict
-
-from django.conf import global_settings
+from typing import List, Dict
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings
 
@@ -33,6 +31,9 @@ class DjangoSettings(BaseSettings):
         }
 
     INSTALLED_APPS: List[str] = [
+        "jazzmin",
+        "taggit",
+        "martor",
         "django.contrib.admin",
         "django.contrib.auth",
         "django.contrib.contenttypes",
@@ -98,7 +99,84 @@ class DjangoSettings(BaseSettings):
     # STATICFILES_DIRS: List[PosixPath] = [BASE_DIR / "static"]
     STATIC_ROOT: PosixPath = BASE_DIR / "static"
 
+    MEDIA_URL: str = "media/"
+    MEDIA_ROOT: PosixPath = BASE_DIR / "media"
+
     DEFAULT_AUTO_FIELD: str = "django.db.models.BigAutoField"
+
+    MARTOR_THEME: str = "bootstrap"
+
+    # Markdown extensions (default)
+    MARTOR_MARKDOWN_EXTENSIONS: List[str] = [
+        "markdown.extensions.extra",
+        "markdown.extensions.nl2br",
+        "markdown.extensions.smarty",
+        "markdown.extensions.fenced_code",
+        "markdown.extensions.sane_lists",
+        # Custom markdown extensions.
+        "martor.extensions.urlize",
+        "martor.extensions.mention",  # to parse markdown mention
+        "martor.extensions.emoji",  # to parse markdown emoji
+        "martor.extensions.escape_html",  # to handle the XSS vulnerabilities
+        "martor.extensions.mdx_add_id",  # to parse id like {#this_is_id}
+    ]
+
+    MARTOR_TOOLBAR_BUTTONS: List[str] = [
+        "bold",
+        "italic",
+        "horizontal",
+        "heading",
+        "pre-code",
+        "blockquote",
+        "unordered-list",
+        "ordered-list",
+        "link",
+        "image-link",
+        "image-upload",
+        "emoji",
+        "direct-mention",
+        "toggle-maximize",
+        "help",
+    ]
+
+    MARTOR_ENABLE_CONFIGS: Dict[str, str] = {
+        "emoji": "true",  # to enable/disable emoji icons.
+        "imgur": "true",  # to enable/disable imgur/custom uploader.
+        "mention": "false",  # to enable/disable mention
+        "jquery": "true",  # to include/revoke jquery (require for admin default django)
+        "living": "false",  # to enable/disable live updates in preview
+        "spellcheck": "false",  # to enable/disable spellcheck in form textareas
+        "hljs": "true",  # to enable/disable hljs highlighting in preview
+    }
+
+    MARTOR_ENABLE_ADMIN_CSS: bool = False
+
+    MARTOR_ENABLE_LABEL: bool = True
+
+    MARTOR_UPLOAD_URL: str = "/media/articles/content"
+
+    TAGGIT_CASE_INSENSITIVE: bool = True
+
+    JAZZMIN_SETTINGS: dict = {
+        "site_title": "Python DM Pro",
+        "site_header": "Python DM Pro",
+        "site_brand": "Python DM Pro",
+        "show_ui_builder": False,
+        "icons": {
+            "auth": "fas fa-users-cog",
+            "auth.user": "fas fa-user",
+            "auth.Group": "fas fa-users",
+            "blog": "fas fa-book",
+            "blog.category": "fas fa-folder",
+            "blog.article": "fa-solid fa-newspaper",
+            "taggit.tag": "fas fa-tag",
+        },
+    }
+
+    JAZZMIN_UI_TWEAKS: dict = {
+        "theme": "flatly",
+        # "dark_mode_theme": "darkly",
+    }
 
 
 class Settings(DjangoSettings):
