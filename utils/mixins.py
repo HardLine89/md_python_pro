@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
 
 
 class DateMixin(models.Model):

@@ -2,8 +2,20 @@ import uuid
 from django.db import models
 from martor.models import MartorField
 from taggit.managers import TaggableManager
+from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
 
 from utils.mixins import DateMixin, SlugifyMixin
+from utils.path_helpers import article_cover_path
+
+
+class UUIDTaggedItem(GenericUUIDTaggedItemBase, TaggedItemBase):
+    # If you only inherit GenericUUIDTaggedItemBase, you need to define
+    # a tag field. e.g.
+    # tag = models.ForeignKey(Tag, related_name="uuid_tagged_items", on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Тег"
+        verbose_name_plural = "Теги"
 
 
 class Category(DateMixin, SlugifyMixin, models.Model):
@@ -54,7 +66,13 @@ class Article(DateMixin, SlugifyMixin, models.Model):
         related_name="articles",
     )
     content = MartorField(verbose_name="Содержание", blank=False)
-    tags = TaggableManager(verbose_name="Теги")
+    tags = TaggableManager(verbose_name="Теги", through=UUIDTaggedItem)
+    cover = models.ImageField(
+        verbose_name="Обложка",
+        upload_to=article_cover_path,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "Статья"

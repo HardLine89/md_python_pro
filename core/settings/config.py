@@ -41,6 +41,7 @@ class DjangoSettings(BaseSettings):
         "django.contrib.messages",
         "django.contrib.staticfiles",
         "blog",
+        "utils",
     ]
 
     MIDDLEWARE: List[str] = [
@@ -97,10 +98,10 @@ class DjangoSettings(BaseSettings):
 
     STATIC_URL: str = "static/"
     # STATICFILES_DIRS: List[PosixPath] = [BASE_DIR / "static"]
-    STATIC_ROOT: PosixPath = BASE_DIR / "static"
+    STATIC_ROOT: Path = BASE_DIR / "static"
 
     MEDIA_URL: str = "media/"
-    MEDIA_ROOT: PosixPath = BASE_DIR / "media"
+    MEDIA_ROOT: Path = BASE_DIR / "media"
 
     DEFAULT_AUTO_FIELD: str = "django.db.models.BigAutoField"
 
@@ -171,6 +172,23 @@ class DjangoSettings(BaseSettings):
             "blog.article": "fa-solid fa-newspaper",
             "taggit.tag": "fas fa-tag",
         },
+        # Links to put along the top menu
+        "topmenu_links": [
+
+            # Url that gets reversed (Permissions can be added)
+            {"name": "Главная", "url": "admin:index", "permissions": ["auth.view_user"]},
+
+            # external url that opens in a new window (Permissions can be added)
+            {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
+
+            # model admin to link to (Permissions checked against model)
+            {"model": "auth.User"},
+
+            # App with dropdown menu to all its models pages (Permissions checked against models)
+            {"app": "blog"},
+        ],
+        "site_logo": "logo.png"
+
     }
 
     JAZZMIN_UI_TWEAKS: dict = {
