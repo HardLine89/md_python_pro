@@ -1,9 +1,14 @@
 import uuid
+
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from martor.models import MartorField
 from taggit.managers import TaggableManager
 from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
 
+from blog.managers import LikeDislikeManager
 from utils.mixins import DateMixin, SlugifyMixin
 from utils.path_helpers import article_cover_path
 
@@ -16,6 +21,24 @@ class UUIDTaggedItem(GenericUUIDTaggedItemBase, TaggedItemBase):
     class Meta:
         verbose_name = "Тег"
         verbose_name_plural = "Теги"
+
+
+class LikeDislike(models.Model):
+    LIKE = 1
+    DISLIKE = -1
+
+    VOTES = ((DISLIKE, "Не нравится"), (LIKE, "Нравится"))
+
+    vote = models.SmallIntegerField(verbose_name="Голос", choices=VOTES)
+    user = models.ForeignKey(
+        User, verbose_name="Пользователь", on_delete=models.CASCADE
+    )
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
+
+    objects = LikeDislikeManager()
 
 
 class Category(DateMixin, SlugifyMixin, models.Model):
@@ -35,6 +58,9 @@ class Category(DateMixin, SlugifyMixin, models.Model):
     slug = models.SlugField(
         verbose_name="URL", max_length=255, blank=False, null=False, unique=True
     )
+
+    def __str__(self):
+        return self.title
 
     class Meta:
         verbose_name = "Категория"
@@ -73,6 +99,13 @@ class Article(DateMixin, SlugifyMixin, models.Model):
         blank=True,
         null=True,
     )
+    views = models.PositiveIntegerField(verbose_name="Просмотры", default=0)
+    votes = GenericRelation(
+        LikeDislike, verbose_name="Оценки", related_query_name="articles"
+    )
+
+    def __str__(self):
+        return f"{self.title} - {self.category}"
 
     class Meta:
         verbose_name = "Статья"
