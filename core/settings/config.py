@@ -1,4 +1,4 @@
-from pathlib import Path, PosixPath
+from pathlib import Path
 from typing import List, Dict
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings
@@ -170,25 +170,36 @@ class DjangoSettings(BaseSettings):
             "blog": "fas fa-book",
             "blog.category": "fas fa-folder",
             "blog.article": "fa-solid fa-newspaper",
+            "blog.likedislike": "fa-solid fa-thumbs-up",
             "taggit.tag": "fas fa-tag",
         },
+        "order_with_respect_to": [
+            "auth",
+            "blog",
+            "blog.category",
+            "blog.article",
+            "blog.likedislike",
+        ],
         # Links to put along the top menu
         "topmenu_links": [
-
             # Url that gets reversed (Permissions can be added)
-            {"name": "Главная", "url": "admin:index", "permissions": ["auth.view_user"]},
-
+            {
+                "name": "Главная",
+                "url": "admin:index",
+                "permissions": ["auth.view_user"],
+            },
             # external url that opens in a new window (Permissions can be added)
-            {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
-
+            {
+                "name": "Support",
+                "url": "https://github.com/farridav/django-jazzmin/issues",
+                "new_window": True,
+            },
             # model admin to link to (Permissions checked against model)
             {"model": "auth.User"},
-
             # App with dropdown menu to all its models pages (Permissions checked against models)
             {"app": "blog"},
         ],
-        "site_logo": "logo.png"
-
+        "site_logo": "logo.png",
     }
 
     JAZZMIN_UI_TWEAKS: dict = {
