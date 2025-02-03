@@ -1,9 +1,19 @@
 from django.contrib import admin
+from django.contrib.contenttypes.admin import GenericTabularInline
 from django.contrib.contenttypes.models import ContentType
 from django.utils.html import format_html
 
 from blog.models import Article, Category
+from comments.models import Comment
 from ratings.models import LikeDislike
+
+
+class CommentInline(GenericTabularInline):
+    model = Comment
+    extra = 0
+    readonly_fields = ("created_at", "updated_at")
+    fields = ("author", "parent", "text", "created_at", "updated_at")
+    can_delete = True
 
 
 @admin.register(Article)
@@ -29,6 +39,7 @@ class ArticleAdmin(admin.ModelAdmin):
         "votes_info",
         "comments_info",
     )
+    inlines = [CommentInline]
     fieldsets = [
         (None, {"fields": ["title", "slug", "category", "content", "tags", "cover"]}),
         ("Даты", {"fields": ["created_at", "updated_at"]}),
