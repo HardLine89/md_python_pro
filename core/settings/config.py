@@ -43,6 +43,7 @@ class DjangoSettings(BaseSettings):
         "blog",
         "utils",
         "ratings",
+        "comments",
     ]
 
     MIDDLEWARE: List[str] = [
@@ -173,12 +174,14 @@ class DjangoSettings(BaseSettings):
             "blog.article": "fa-solid fa-newspaper",
             "ratings.likedislike": "fa-solid fa-thumbs-up",
             "taggit.tag": "fas fa-tag",
+            "comments.comment": "fa-solid fa-comment",
         },
         "order_with_respect_to": [
             "auth",
             "blog",
             "blog.category",
             "blog.article",
+            "comments.comment",
             "ratings.likedislike",
         ],
         # Links to put along the top menu
@@ -199,6 +202,8 @@ class DjangoSettings(BaseSettings):
             {"model": "auth.User"},
             # App with dropdown menu to all its models pages (Permissions checked against models)
             {"app": "blog"},
+            {"app": "ratings"},
+            {"app": "comments"},
         ],
         "site_logo": "logo.png",
     }

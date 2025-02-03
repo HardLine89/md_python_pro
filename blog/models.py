@@ -6,6 +6,7 @@ from martor.models import MartorField
 from taggit.managers import TaggableManager
 from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
 
+from comments.models import Comment
 from ratings.models import LikeDislike
 from utils.mixins import DateMixin, SlugifyMixin
 from utils.path_helpers import article_cover_path
@@ -80,6 +81,9 @@ class Article(DateMixin, SlugifyMixin, models.Model):
         null=True,
     )
     views = models.PositiveIntegerField(verbose_name="Просмотры", default=0)
+    comments = GenericRelation(
+        Comment, verbose_name="Комментарии", related_query_name="articles"
+    )
     votes = GenericRelation(
         LikeDislike, verbose_name="Оценки", related_query_name="articles"
     )

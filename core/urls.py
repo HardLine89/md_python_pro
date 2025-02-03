@@ -25,5 +25,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("blog.urls")),
     path("", include("ratings.urls")),
+    path("", include("comments.urls")),
     path("martor/", include("martor.urls")),
 ] + static(config.STATIC_URL, document_root=config.STATIC_ROOT)
