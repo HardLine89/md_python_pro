@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Count, Q
 from django.utils.html import format_html
 
-from blog.models import Article, Category, LikeDislike
+from blog.models import Article, Category
+from ratings.models import LikeDislike
 
 
 @admin.register(Article)
@@ -61,11 +61,3 @@ class CategoryAdmin(admin.ModelAdmin):
         (None, {"fields": ["title", "slug"]}),
         ("Даты", {"fields": ["created_at", "updated_at"]}),
     ]
-
-
-@admin.register(LikeDislike)
-class LikeDislikeAdmin(admin.ModelAdmin):
-    list_display = ("user", "content_object", "vote")
-    list_filter = ("vote", "content_type")
-    search_fields = ("user__username", "content_object__title")
-    list_per_page = 10

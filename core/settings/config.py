@@ -42,6 +42,7 @@ class DjangoSettings(BaseSettings):
         "django.contrib.staticfiles",
         "blog",
         "utils",
+        "ratings",
     ]
 
     MIDDLEWARE: List[str] = [
@@ -170,7 +171,7 @@ class DjangoSettings(BaseSettings):
             "blog": "fas fa-book",
             "blog.category": "fas fa-folder",
             "blog.article": "fa-solid fa-newspaper",
-            "blog.likedislike": "fa-solid fa-thumbs-up",
+            "ratings.likedislike": "fa-solid fa-thumbs-up",
             "taggit.tag": "fas fa-tag",
         },
         "order_with_respect_to": [
@@ -178,7 +179,7 @@ class DjangoSettings(BaseSettings):
             "blog",
             "blog.category",
             "blog.article",
-            "blog.likedislike",
+            "ratings.likedislike",
         ],
         # Links to put along the top menu
         "topmenu_links": [
