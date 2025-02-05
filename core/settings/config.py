@@ -14,6 +14,11 @@ class DjangoSettings(BaseSettings):
     SECRET_KEY: str
     DEBUG: bool = True
     ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1"]
+
+    GOOGLE_CLIENT_ID: str = Field(env="GOOGLE_CLIENT_ID", default="")
+    GOOGLE_CLIENT_SECRET: str = Field(env="GOOGLE_CLIENT_SECRET", default="")
+    GOOGLE_CLIENT_KEY: str = Field(env="GOOGLE_CLIENT_KEY", default="")
+
     BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
 
     @property
@@ -34,6 +39,10 @@ class DjangoSettings(BaseSettings):
         "jazzmin",
         "taggit",
         "martor",
+        "allauth",
+        "allauth.account",
+        "allauth.socialaccount",
+        "allauth.socialaccount.providers.google",
         "django.contrib.admin",
         "django.contrib.auth",
         "django.contrib.contenttypes",
@@ -55,6 +64,7 @@ class DjangoSettings(BaseSettings):
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        "allauth.account.middleware.AccountMiddleware",
     ]
 
     ROOT_URLCONF: str = "core.urls"
@@ -86,6 +96,7 @@ class DjangoSettings(BaseSettings):
                     "django.template.context_processors.request",
                     "django.contrib.auth.context_processors.auth",
                     "django.contrib.messages.context_processors.messages",
+                    "django.template.context_processors.request",
                 ],
             },
         }
@@ -107,6 +118,33 @@ class DjangoSettings(BaseSettings):
     MEDIA_ROOT: Path = BASE_DIR / "media"
 
     DEFAULT_AUTO_FIELD: str = "django.db.models.BigAutoField"
+
+    AUTH_USER_MODEL: str = "auth.User"
+
+    ACCOUNT_AUTHENTICATION_METHOD: str = "email"
+    ACCOUNT_EMAIL_REQUIRED: bool = True
+    ACCOUNT_UNIQUE_EMAIL: bool = True
+    ACCOUNT_USERNAME_REQUIRED: bool = False
+    ACCOUNT_USER_MODEL_USERNAME_FIELD: str | None = None
+
+    AUTHENTICATION_BACKENDS: List[str] = [
+        "django.contrib.auth.backends.ModelBackend",
+        "allauth.account.auth_backends.AuthenticationBackend",
+    ]
+
+    @property
+    def SOCIALACCOUNT_PROVIDERS(self) -> dict:
+        return {
+            "SCOPE": ["profile", "email"],
+            "AUTH_PARAMS": {"access_type": "online"},
+            "google": {
+                "APP": {
+                    "client_id": self.GOOGLE_CLIENT_ID,
+                    "secret": self.GOOGLE_CLIENT_SECRET,
+                    "key": self.GOOGLE_CLIENT_KEY,
+                }
+            },
+        }
 
     MARTOR_THEME: str = "bootstrap"
 
@@ -169,6 +207,7 @@ class DjangoSettings(BaseSettings):
         "icons": {
             "auth": "fas fa-users-cog",
             "auth.user": "fas fa-user",
+            "users.profile": "fas fa-user",
             "auth.Group": "fas fa-users",
             "blog": "fas fa-book",
             "blog.category": "fas fa-folder",
@@ -176,14 +215,23 @@ class DjangoSettings(BaseSettings):
             "ratings.likedislike": "fa-solid fa-thumbs-up",
             "taggit.tag": "fas fa-tag",
             "comments.comment": "fa-solid fa-comment",
+            "account.emailaddress": "fa-solid fa-envelope",
+            "socialaccount.socialaccount": "fa-solid fa-user",
+            "socialaccount.socialapp": "fa-solid fa-code",
+            "socialaccount.socialtoken": "fa-solid fa-key",
         },
         "order_with_respect_to": [
-            "auth",
             "blog",
             "blog.category",
             "blog.article",
             "comments.comment",
             "ratings.likedislike",
+            "taggit.tag",
+            "auth",
+            "account.emailaddress",
+            "socialaccount.socialaccount",
+            "socialaccount.socialapp",
+            "socialaccount.socialtoken",
         ],
         # Links to put along the top menu
         "topmenu_links": [
