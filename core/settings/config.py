@@ -44,6 +44,7 @@ class DjangoSettings(BaseSettings):
         "utils",
         "ratings",
         "comments",
+        "users",
     ]
 
     MIDDLEWARE: List[str] = [
@@ -209,9 +210,15 @@ class DjangoSettings(BaseSettings):
     }
 
     JAZZMIN_UI_TWEAKS: dict = {
+        "navbar_small_text": True,
+        "brand_small_text": True,
+        "navbar": "navbar-dark",
+        "sidebar_nav_compact_style": True,
         "theme": "flatly",
         # "dark_mode_theme": "darkly",
     }
+
+    X_FRAME_OPTIONS: str = "SAMEORIGIN"
 
 
 class Settings(DjangoSettings):

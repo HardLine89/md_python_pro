@@ -27,8 +27,7 @@ class Comment(DateMixin, models.Model):
     )
 
     def __str__(self):
-        return f"{self.author} - {self.content_type} - " \
-               f"{self.content_object.id} | {self.content_object}"
+        return f"{self.author} - {self.content_type} - {self.content_object}"
 
     class Meta:
         verbose_name = "Коммент"

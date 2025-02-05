@@ -42,7 +42,6 @@ class ArticleAdmin(admin.ModelAdmin):
     inlines = [CommentInline]
     fieldsets = [
         (None, {"fields": ["title", "slug", "category", "content", "tags", "cover"]}),
-        ("Даты", {"fields": ["created_at", "updated_at"]}),
         (
             "Статистика",
             {
@@ -53,6 +52,7 @@ class ArticleAdmin(admin.ModelAdmin):
                 ]
             },
         ),
+        ("Даты", {"fields": ["created_at", "updated_at"]}),
     ]
 
     def comments_info(self, obj):
