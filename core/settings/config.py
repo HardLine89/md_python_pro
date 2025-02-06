@@ -204,6 +204,7 @@ class DjangoSettings(BaseSettings):
         "site_header": "Python DM Pro",
         "site_brand": "Python DM Pro",
         "show_ui_builder": False,
+        "user_avatar": "avatar",
         "icons": {
             "auth": "fas fa-users-cog",
             "auth.user": "fas fa-user",
