@@ -39,6 +39,8 @@ class DjangoSettings(BaseSettings):
         "jazzmin",
         "taggit",
         "martor",
+        "crispy_forms",
+        "crispy_bootstrap4",
         "allauth",
         "allauth.account",
         "allauth.socialaccount",
@@ -132,11 +134,13 @@ class DjangoSettings(BaseSettings):
         "allauth.account.auth_backends.AuthenticationBackend",
     ]
 
+    CRISPY_ALLOWED_TEMPLATE_PACKS: str = "bootstrap4"
+
+    CRISPY_TEMPLATE_PACK: str = "bootstrap4"
+
     @property
     def SOCIALACCOUNT_PROVIDERS(self) -> dict:
         return {
-            "SCOPE": ["profile", "email"],
-            "AUTH_PARAMS": {"access_type": "online"},
             "google": {
                 "APP": {
                     "client_id": self.GOOGLE_CLIENT_ID,

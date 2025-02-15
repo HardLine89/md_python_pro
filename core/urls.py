@@ -21,11 +21,16 @@ from django.urls import path, include
 
 from core.settings import config
 
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("blog.urls")),
-    path("", include("ratings.urls")),
-    path("", include("comments.urls")),
-    path("", include("users.urls")),
-    path("martor/", include("martor.urls")),
-] + static(config.STATIC_URL, document_root=config.STATIC_ROOT)
+urlpatterns = (
+    [
+        path("admin/", admin.site.urls),
+        path("", include("blog.urls")),
+        path("", include("ratings.urls")),
+        path("", include("comments.urls")),
+        path("", include("users.urls")),
+        path("martor/", include("martor.urls")),
+        path("accounts/", include("allauth.urls")),
+    ]
+    + static(config.STATIC_URL, document_root=config.STATIC_ROOT)
+    + static(config.MEDIA_URL, document_root=config.MEDIA_ROOT)
+)

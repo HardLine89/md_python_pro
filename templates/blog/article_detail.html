@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+
+    <div class="col-md-8">
+        <h1>{{ article.title }}</h1>
+        {% if article.cover %}
+            <img src="{{ article.cover.url }}" class="img-fluid mb-4" alt="{{ article.title }}">
+        {% endif %}
+        <p>{{ article.content }}</p>
+        <p class="text-muted">Опубликовано {{ article.created_at|date:"d.m.Y" }} | Автор: {{ article.author }}</p>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Комментарии</h5>
+                {% for comment in article.comments.all %}
+                    <div class="mb-3">
+                        <strong>{{ comment.user.username }}</strong>
+                        <p>{{ comment.content }}</p>
+                        <small class="text-muted">{{ comment.created_at|date:"d.m.Y H:i" }}</small>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,5 +1,6 @@
 import uuid
 
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from martor.models import MartorField
@@ -66,6 +67,7 @@ class Article(DateMixin, SlugifyMixin, models.Model):
     slug = models.SlugField(
         verbose_name="URL", max_length=255, blank=False, null=False, unique=True
     )
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Автор")
     category = models.ForeignKey(
         Category,
         verbose_name="Категория",
