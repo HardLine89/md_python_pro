@@ -21,6 +21,7 @@ class ArticleAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "category",
+        "author",
         "created_at",
         "updated_at",
         "views",
@@ -41,7 +42,7 @@ class ArticleAdmin(admin.ModelAdmin):
     )
     inlines = [CommentInline]
     fieldsets = [
-        (None, {"fields": ["title", "slug", "category", "content", "tags", "cover"]}),
+        (None, {"fields": ["title", "slug", "category", "content", "tags", "author", "cover"]}),
         (
             "Статистика",
             {

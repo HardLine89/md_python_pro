@@ -12,6 +12,7 @@
             {% trans 'The following email addresses are associated with your account:' %}
         {% endelement %}
         {% url 'account_email' as email_url %}
+
         {% element form form=form action=email_url method="post" tags="email,list" %}
             {% slot body %}
                 {% csrf_token %}
@@ -40,7 +41,7 @@
                 {% endfor %}
             {% endslot %}
             {% slot actions %}
-                {% element button type="submit" name="action_primary" class="btn btn-primary" %}
+                {% element button type="submit" class="btn btn-primary" name="action_primary" class="btn btn-primary" %}
                     {% trans 'Make Primary' %}
                 {% endelement %}
                 {% element button tags="secondary" type="submit" name="action_send" class="btn btn-warning" %}

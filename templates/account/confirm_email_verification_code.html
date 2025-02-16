@@ -23,7 +23,7 @@
             {{ redirect_field }}
         {% endslot %}
         {% slot actions %}
-            {% element button type="submit" tags="prominent,confirm" %}
+            {% element button type="submit" class="btn btn-primary" tags="prominent,confirm" %}
                 {% translate "Confirm" %}
             {% endelement %}
             {% if cancel_url %}
@@ -31,7 +31,7 @@
                     {% translate "Cancel" %}
                 {% endelement %}
             {% else %}
-                {% element button type="submit" form="logout-from-stage" tags="link,cancel" %}
+                {% element button type="submit" class="btn btn-primary" form="logout-from-stage" tags="link,cancel" %}
                     {% translate "Cancel" %}
                 {% endelement %}
             {% endif %}
