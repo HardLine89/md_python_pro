@@ -16,6 +16,7 @@ class Profile(models.Model):
         blank=True,
         null=True,
         verbose_name="Аватар",
+        default="users/avatars/default.jpg",
     )
     about = models.TextField(
         blank=True,

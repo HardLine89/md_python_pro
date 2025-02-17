@@ -27,6 +27,8 @@ pyjwt = "^2.10.1"
 python3-saml = "^1.16.0"
 django-crispy-forms = "^2.3"
 crispy-bootstrap4 = "^2024.10"
+faker = "^36.1.1"
+django-htmx = "^1.22.0"
 
 
 [build-system]

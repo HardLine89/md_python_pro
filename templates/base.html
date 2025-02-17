@@ -25,7 +25,7 @@
 
     <link href="{% static 'plugins/css/ace.min.css' %}" type="text/css" media="all" rel="stylesheet"/>
     <link href="{% static 'martor/css/martor.bootstrap.min.css' %}" type="text/css" media="all" rel="stylesheet"/>
-
+    <script src="{% static 'js/htmx.min.js' %}" defer></script>
 </head>
 <body>
 
@@ -168,11 +168,11 @@
             <h5>Популярные статьи</h5>
             <ul class="list-unstyled mb-4">
                 {% for week_article in popular_week %}
-                    <div class="card">
+                    <div class="card mb-5">
                         <img src="{{ week_article.cover.url }}" class="card-img-top" alt="{{ week_article.title }}"/>
                         <div class="card-body">
                             <h5 class="card-title">{{ week_article.title }}</h5>
-                            <p class="card-text">{{ week_article.content|truncatewords:15|safe_markdown|strip_links }}</p>
+                            <p class="card-text">{{ week_article.content|truncatewords:10|safe_markdown|strip_links }}</p>
                             <button type="button" class="btn btn-primary">Читать</button>
                         </div>
                         <div class="card-footer text-muted">

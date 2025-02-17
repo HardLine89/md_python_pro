@@ -81,6 +81,7 @@ class Article(DateMixin, SlugifyMixin, models.Model):
         upload_to=article_cover_path,
         blank=True,
         null=True,
+        default="articles/default.png",
     )
     views = models.PositiveIntegerField(verbose_name="Просмотры", default=0)
     comments = GenericRelation(

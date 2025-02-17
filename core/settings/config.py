@@ -39,6 +39,7 @@ class DjangoSettings(BaseSettings):
         "jazzmin",
         "taggit",
         "martor",
+        "django_htmx",
         "crispy_forms",
         "crispy_bootstrap4",
         "allauth",
@@ -67,6 +68,7 @@ class DjangoSettings(BaseSettings):
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
         "allauth.account.middleware.AccountMiddleware",
+        "django_htmx.middleware.HtmxMiddleware",
     ]
 
     ROOT_URLCONF: str = "core.urls"
@@ -208,7 +210,7 @@ class DjangoSettings(BaseSettings):
         "site_header": "Python DM Pro",
         "site_brand": "Python DM Pro",
         "show_ui_builder": False,
-        "user_avatar": "avatar",
+        "user_avatar": "user.profile.avatar",
         "icons": {
             "auth": "fas fa-users-cog",
             "auth.user": "fas fa-user",
