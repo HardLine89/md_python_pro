@@ -32,7 +32,7 @@
 <!-- Шапка -->
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-body-tertiary">
+<nav class="navbar navbar-expand-lg navbar-dark bg-body-tertiary sticky-top">
     <!-- Container wrapper -->
     <div class="container">
         <!-- Toggle button -->
@@ -53,9 +53,9 @@
             <!-- Navbar brand -->
             <a class="navbar-brand mt-2 mt-lg-0" href="#">
                 <img
-                        src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp"
-                        height="15"
-                        alt="MDB Logo"
+                        src="{% static 'logo.png' %}"
+                        height="30"
+                        alt="MDPYTHON"
                         loading="lazy"
                 />
             </a>
@@ -165,11 +165,51 @@
             {% endblock extra_body %}
         </main>
         <aside class="col-md-3 sidebar">
-            <h5>Популярные статьи</h5>
+            <div class="card mb-4">
+                <div class="card rounded-5">
+                    <h5 class="mb-0 text-center">
+                        <button class="btn btn-link" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#categoriesCollapse" aria-expanded="false"
+                                aria-controls="categoriesCollapse" onclick="toggleIcon(this)">
+                            <span style="font-size: 1.25rem;
+                                        color: #fff;
+                                        text-decoration: none;
+                                        text-transform: none;">Категории</span>
+                            <i class="fas fa-chevron-down"></i> <!-- Иконка стрелки (используется Font Awesome) -->
+                        </button>
+                    </h5>
+                </div>
+
+                <div class="collapse" id="categoriesCollapse">
+                    <ul class="list-group list-group-flush">
+                        {% for category in categories %}
+                            <li class="list-group-item text-center">{{ category.title|capfirst }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {#            <div class="card mb-4">#}
+            {#                <div class="card-header">#}
+            {#                    <h5 class="mb-0 text-center">Категории</h5>#}
+            {#                </div>#}
+            {##}
+            {#                    <ul class="list-group list-group-flush">#}
+            {#                        {% for category in categories %}#}
+            {#                        <li class="list-group-item text-center">{{ category.title|capfirst }}</li>#}
+            {#                        {% endfor %}#}
+            {#                    </ul>#}
+            {##}
+            {#            </div>#}
+            <h5 class="mb-4 text-center">Популярные статьи</h5>
             <ul class="list-unstyled mb-4">
                 {% for week_article in popular_week %}
-                    <div class="card mb-5">
-                        <img src="{{ week_article.cover.url }}" class="card-img-top" alt="{{ week_article.title }}"/>
+                    <div class="card mb-5 rounded-5 h-100">
+                        <div class="mt-n3 bg-image hover-overlay mx-3 shadow-4-strong rounded-5"
+                             data-mdb-ripple-init
+                             data-mdb-ripple-color="light">
+                            <img src="{{ week_article.cover.url }}" class="card-img-top"
+                                 alt="{{ week_article.title }}"/>
+                        </div>
                         <div class="card-body">
                             <h5 class="card-title">{{ week_article.title }}</h5>
                             <p class="card-text">{{ week_article.content|truncatewords:10|safe_markdown|strip_links }}</p>
@@ -193,7 +233,24 @@
                     </div>
                 {% endfor %}
             </ul>
-            <h5>Последние комментарии</h5>
+            <h5 class="mb-3 mt-5 text-center">Популярные теги</h5>
+            <div>
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for tag in popular_tags %}
+                                <a href="#" class="badge bg-primary text-decoration-none">
+                                    # {{ tag.name }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <h5 class="mt-5 text-center">Последние комментарии</h5>
             <ul class="list-unstyled mb-4">
                 {% for comment in comments %}
                     <div class="d-flex align-items-center">
@@ -208,22 +265,10 @@
                     </div>
                 {% endfor %}
             </ul>
-            <h5>Теги</h5>
-            <div>
-                {#                    {% for tag in tags %}#}
-                {#                        <a href="{% url 'tag_view' tag.slug %}" class="badge bg-secondary">{{ tag.name }}</a>#}
-                {#                    {% endfor %}#}
-            </div>
         </aside>
     </div>
 </div>
 
-<script type="text/javascript" src="{% static 'plugins/js/highlight.min.js' %}"></script>
-<script>
-    $('.martor-preview pre').each(function (i, block) {
-        hljs.highlightBlock(block);
-    });
-</script>
 
 <!-- Футер -->
 <div class="footer-wrapper mt-4">
@@ -233,6 +278,7 @@
         </div>
     </footer>
 </div>
+<script type="text/javascript" src="{% static 'plugins/js/highlight.min.js' %}"></script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
@@ -245,6 +291,18 @@
 <!-- MDB -->
 <script type="text/javascript" src="{% static 'js/mdb.umd.min.js' %}"></script>
 <!-- Custom scripts -->
-<script type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleIcon(button) {
+        const icon = button.querySelector('i');
+        icon.classList.toggle('fa-chevron-down');
+        icon.classList.toggle('fa-chevron-up');
+    }
+</script>
+<script>
+    $('.martor-preview pre').each(function (i, block) {
+        hljs.highlightBlock(block);
+    });
+</script>
 </body>
 </html>

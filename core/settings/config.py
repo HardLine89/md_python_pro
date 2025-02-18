@@ -210,7 +210,7 @@ class DjangoSettings(BaseSettings):
         "site_header": "Python DM Pro",
         "site_brand": "Python DM Pro",
         "show_ui_builder": False,
-        "user_avatar": "user.profile.avatar",
+        "user_avatar": "users.profile.avatar",
         "icons": {
             "auth": "fas fa-users-cog",
             "auth.user": "fas fa-user",
@@ -261,7 +261,7 @@ class DjangoSettings(BaseSettings):
             {"app": "ratings"},
             {"app": "comments"},
         ],
-        "site_logo": "logo.png",
+        "site_logo": "admin_logo.png",
     }
 
     JAZZMIN_UI_TWEAKS: dict = {

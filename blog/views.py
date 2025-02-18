@@ -1,11 +1,12 @@
 import random
 
 from django.core.paginator import Paginator
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.http import HttpResponse
 from django.utils import timezone
 from django.views.generic import ListView
 from faker import Faker
+from taggit.models import Tag
 
 from blog.models import Article, Category
 from comments.models import Comment
@@ -44,6 +45,10 @@ class ArticleListView(ListView):
             .annotate(sum_views=Sum("views"), sum_votes=Sum("votes"))
             .order_by("-sum_views", "sum_votes")[:3]
         )
+        # Получаем 20 самых популярных тегов
+        context["popular_tags"] = Tag.objects.annotate(
+            num_times=Count('taggit_taggeditem_items')
+        ).order_by('-num_times')[:20]
 
         return context
 
