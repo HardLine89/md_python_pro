@@ -1,10 +1,11 @@
 import random
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Q
 from django.http import HttpResponse
 from django.utils import timezone
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from faker import Faker
 from taggit.models import Tag
 
@@ -34,6 +35,7 @@ class ArticleListView(ListView):
         context["articles"] = p.page(context["page_obj"].number)
         context["categories"] = Category.objects.all()
         context["comments"] = Comment.objects.all().order_by("-created_at")[:3]
+        context["recent_articles"] = None
         context["popular_week"] = (
             Article.objects.all()
             .filter(
@@ -47,9 +49,42 @@ class ArticleListView(ListView):
         )
         # Получаем 20 самых популярных тегов
         context["popular_tags"] = Tag.objects.annotate(
-            num_times=Count('taggit_taggeditem_items')
-        ).order_by('-num_times')[:20]
+            num_times=Count("taggit_taggeditem_items")
+        ).order_by("-num_times")[:20]
 
+        return context
+
+
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = "blog/article_detail.html"
+    lookup_field = "slug"
+    context_object_name = "article"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        article = self.object
+        article_content_type = ContentType.objects.get_for_model(article)
+        context["comments"] = Comment.objects.filter(
+            content_type=article_content_type,
+            object_id=article.id  # UUID объекта
+        )
+        context["popular_week"] = None
+        context["recent_articles"] = (
+            Article.objects.filter(
+                Q(category=article.category)  # Статьи из той же категории
+                | Q(tags__in=article.tags.all())  # Статьи с похожими тегами
+            )
+            .exclude(id=article.id)  # Исключаем текущую статью
+            .distinct()  # Убираем дубликаты
+            .annotate(
+                common_tags=Count("tags", filter=Q(tags__in=article.tags.all()))
+            )  # Количество общих тегов
+            .order_by("-common_tags", "-created_at")[:5]  # Сортируем по количеству общих тегов и дате
+        )
+        context["popular_tags"] = Tag.objects.annotate(
+            num_times=Count("taggit_taggeditem_items")
+        ).order_by("-num_times")[:20]
         return context
 
 

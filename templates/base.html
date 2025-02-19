@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Мой блог{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link
@@ -22,134 +23,28 @@
     <!-- MDB -->
 
     <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}">
-
     <link href="{% static 'plugins/css/ace.min.css' %}" type="text/css" media="all" rel="stylesheet"/>
     <link href="{% static 'martor/css/martor.bootstrap.min.css' %}" type="text/css" media="all" rel="stylesheet"/>
     <script src="{% static 'js/htmx.min.js' %}" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.9.0/highlightjs-line-numbers.min.js"></script>
+
+
+    <!-- and it's easy to individually load additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+
+    <script>
+        hljs.highlightAll();
+        hljs.initLineNumbersOnLoad();
+    </script>
 </head>
 <body>
 
 <!-- Шапка -->
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-body-tertiary sticky-top">
-    <!-- Container wrapper -->
-    <div class="container">
-        <!-- Toggle button -->
-        <button
-                data-mdb-collapse-init
-                class="navbar-toggler"
-                type="button"
-                data-mdb-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-        >
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <!-- Collapsible wrapper -->
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <!-- Navbar brand -->
-            <a class="navbar-brand mt-2 mt-lg-0" href="#">
-                <img
-                        src="{% static 'logo.png' %}"
-                        height="30"
-                        alt="MDPYTHON"
-                        loading="lazy"
-                />
-            </a>
-            <!-- Left links -->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Team</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Projects</a>
-                </li>
-            </ul>
-            <!-- Left links -->
-        </div>
-
-        <!-- Collapsible wrapper -->
-
-        <!-- Right elements -->
-        <div class="d-flex align-items-center">
-            <!-- Icon -->
-            <a class="text-reset me-3" href="#">
-                <i class="fas fa-shopping-cart"></i>
-            </a>
-
-            <!-- Notifications -->
-            <div class="dropdown">
-                <a
-                        data-mdb-dropdown-init
-                        class="text-reset me-3 dropdown-toggle hidden-arrow"
-                        href="#"
-                        id="navbarDropdownMenuLink"
-                        role="button"
-                        aria-expanded="false"
-                >
-                    <i class="fas fa-bell"></i>
-                    <span class="badge rounded-pill badge-notification bg-danger">1</span>
-                </a>
-                <ul
-                        class="dropdown-menu dropdown-menu-end"
-                        aria-labelledby="navbarDropdownMenuLink"
-                >
-                    <li>
-                        <a class="dropdown-item" href="#">Some news</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">Another news</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- Avatar -->
-            <div class="dropdown">
-                <a
-                        data-mdb-dropdown-init
-                        class="dropdown-toggle d-flex align-items-center hidden-arrow"
-                        href="#"
-                        id="navbarDropdownMenuAvatar"
-                        role="button"
-                        aria-expanded="false"
-                >
-                    <img
-                            src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
-                            class="rounded-circle"
-                            height="25"
-                            alt="Black and White Portrait of a Man"
-                            loading="lazy"
-                    />
-                </a>
-                <ul
-                        class="dropdown-menu dropdown-menu-end"
-                        aria-labelledby="navbarDropdownMenuAvatar"
-                >
-                    <li>
-                        <a class="dropdown-item" href="#">My profile</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">Settings</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <!-- Right elements -->
-    </div>
-    <!-- Container wrapper -->
-
-</nav>
+{% include 'blog/page_parts/navbar.html' %}
 <!-- Navbar -->
 
 
@@ -164,120 +59,16 @@
             {% block extra_body %}
             {% endblock extra_body %}
         </main>
-        <aside class="col-md-3 sidebar">
-            <div class="card mb-4">
-                <div class="card rounded-5">
-                    <h5 class="mb-0 text-center">
-                        <button class="btn btn-link" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#categoriesCollapse" aria-expanded="false"
-                                aria-controls="categoriesCollapse" onclick="toggleIcon(this)">
-                            <span style="font-size: 1.25rem;
-                                        color: #fff;
-                                        text-decoration: none;
-                                        text-transform: none;">Категории</span>
-                            <i class="fas fa-chevron-down"></i> <!-- Иконка стрелки (используется Font Awesome) -->
-                        </button>
-                    </h5>
-                </div>
-
-                <div class="collapse" id="categoriesCollapse">
-                    <ul class="list-group list-group-flush">
-                        {% for category in categories %}
-                            <li class="list-group-item text-center">{{ category.title|capfirst }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-            {#            <div class="card mb-4">#}
-            {#                <div class="card-header">#}
-            {#                    <h5 class="mb-0 text-center">Категории</h5>#}
-            {#                </div>#}
-            {##}
-            {#                    <ul class="list-group list-group-flush">#}
-            {#                        {% for category in categories %}#}
-            {#                        <li class="list-group-item text-center">{{ category.title|capfirst }}</li>#}
-            {#                        {% endfor %}#}
-            {#                    </ul>#}
-            {##}
-            {#            </div>#}
-            <h5 class="mb-4 text-center">Популярные статьи</h5>
-            <ul class="list-unstyled mb-4">
-                {% for week_article in popular_week %}
-                    <div class="card mb-5 rounded-5 h-100">
-                        <div class="mt-n3 bg-image hover-overlay mx-3 shadow-4-strong rounded-5"
-                             data-mdb-ripple-init
-                             data-mdb-ripple-color="light">
-                            <img src="{{ week_article.cover.url }}" class="card-img-top"
-                                 alt="{{ week_article.title }}"/>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ week_article.title }}</h5>
-                            <p class="card-text">{{ week_article.content|truncatewords:10|safe_markdown|strip_links }}</p>
-                            <button type="button" class="btn btn-primary">Читать</button>
-                        </div>
-                        <div class="card-footer text-muted">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span><i class="fa-solid fa-user"></i> {{ week_article.author.username }}</span>
-                                </div>
-                                <div>
-                                    <span><i class="fa-solid fa-layer-group"></i> {{ week_article.category }}</span>
-                                </div>
-                            </div>
-                            <div class="text-center mt-2">
-                                {% for tag in week_article.tags.all %}
-                                    <span class="badge bg-primary">#{{ tag.name }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </ul>
-            <h5 class="mb-3 mt-5 text-center">Популярные теги</h5>
-            <div>
-                <div class="card">
-                    <div class="card-body">
-
-                        <div class="d-flex flex-wrap gap-2">
-                            {% for tag in popular_tags %}
-                                <a href="#" class="badge bg-primary text-decoration-none">
-                                    # {{ tag.name }}
-                                </a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <h5 class="mt-5 text-center">Последние комментарии</h5>
-            <ul class="list-unstyled mb-4">
-                {% for comment in comments %}
-                    <div class="d-flex align-items-center">
-
-                        <img src="{{ comment.author.profile.avatar.url }}" alt="{{ comment.author.username }}"
-                             class="w-25 h-25 rounded-6 mt-3">
-
-                        <div class="ms-4">
-                            <p class="fw-bold mb-1">{{ comment.author.username }}</p>
-                            <p class="text-muted mb-0">{{ comment.text|truncatewords:10 }}</p>
-                        </div>
-                    </div>
-                {% endfor %}
-            </ul>
-        </aside>
+        <!-- Сайдбар -->
+        {% include 'blog/page_parts/sidebar.html' %}
     </div>
 </div>
 
 
 <!-- Футер -->
-<div class="footer-wrapper mt-4">
-    <footer class="footer">
-        <div class="container text-center">
-            <p>&copy; 2025 Мой блог. Все права защищены.</p>
-        </div>
-    </footer>
-</div>
+{% include 'blog/page_parts/footer.html' %}
+<!-- Футер -->
+
 <script type="text/javascript" src="{% static 'plugins/js/highlight.min.js' %}"></script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

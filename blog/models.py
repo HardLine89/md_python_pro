@@ -3,6 +3,7 @@ import uuid
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
+from django.urls import reverse
 from martor.models import MartorField
 from taggit.managers import TaggableManager
 from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
@@ -90,6 +91,9 @@ class Article(DateMixin, SlugifyMixin, models.Model):
     votes = GenericRelation(
         LikeDislike, verbose_name="Оценки", related_query_name="articles"
     )
+
+    def get_absolute_url(self):
+        return reverse("blog:article_detail", kwargs={"slug": self.slug})
 
     def __str__(self):
         return f"{self.title} - {self.category}"

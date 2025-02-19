@@ -1,0 +1,111 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load martortags %}
+{% load strip_links %}
+<aside class="col-md-3 sidebar">
+    <div class="card mb-5">
+        <div class="card rounded-5">
+            <h5 class="mb-0 text-center">
+                <button class="btn btn-link" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#categoriesCollapse" aria-expanded="false"
+                        aria-controls="categoriesCollapse" onclick="toggleIcon(this)">
+                            <span style="font-size: 1.25rem;
+                                    color: #fff;
+                                    {#text-decoration: none;#}
+                                    text-transform: none;">Категории</span>
+                    <i class="fas fa-chevron-down"></i> <!-- Иконка стрелки (используется Font Awesome) -->
+                </button>
+            </h5>
+        </div>
+
+        <div class="collapse" id="categoriesCollapse">
+            <ul class="list-group list-group-flush">
+                {% for category in categories %}
+                    <li class="list-group-item text-center list-group-item-action"
+                        data-mdb-ripple-init>{{ category.title|capfirst }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <h5 class="mb-4 text-center">{% if popular_week %}
+        Популярные статьи
+    {% elif recent_articles %}
+        Вам может понравиться
+    {% else %}
+    {% endif %}
+    </h5>
+
+    <ul class="list-unstyled mb-4">
+        {% with recent_articles|default_if_none:popular_week as sidebar_articles %}
+            {% if sidebar_articles %}
+                {% for article in sidebar_articles %}
+
+                    <div class="card mb-5 rounded-5 h-100">
+                        <div class="mt-n3 bg-image hover-overlay mx-3 shadow-4-strong rounded-5"
+                             data-mdb-ripple-init
+                             data-mdb-ripple-color="light">
+                            <a href="{{ article.get_absolute_url }}">
+                                <img src="{{ article.cover.url }}" class="card-img-top"
+                                     alt="{{ article.title }}"/>
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ article.title }}</h5>
+                            <p class="card-text">{{ article.content|truncatewords:10|safe_markdown|strip_links }}</p>
+                            <a href="{{ article.get_absolute_url }}"><button type="button" class="btn btn-primary">Читать</button></a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span><i class="fa-solid fa-user"></i> {{ article.author.username }}</span>
+                                </div>
+                                <div>
+                                    <span><i class="fa-solid fa-layer-group"></i> {{ article.category }}</span>
+                                </div>
+                            </div>
+                            <div class="text-center mt-2">
+                                {% for tag in article.tags.all %}
+                                    <span class="badge bg-primary">#{{ tag.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </ul>
+    <h5 class="mb-3 mt-5 text-center">Популярные теги</h5>
+    <div>
+        <div class="card">
+            <div class="card-body">
+
+                <div class="d-flex flex-wrap gap-2">
+                    {% for tag in popular_tags %}
+                        <a href="#" class="badge bg-primary text-decoration-none">
+                            # {{ tag.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <h5 class="mt-5 text-center">Последние комментарии</h5>
+    <ul class="list-unstyled mb-4">
+        {% for comment in comments %}
+            <div class="d-flex align-items-center">
+
+                <img src="{{ comment.author.profile.avatar.url }}" alt="{{ comment.author.username }}"
+                     class="w-25 h-25 rounded-6 mt-3">
+
+                <div class="ms-4">
+                    <p class="fw-bold mb-1">{{ comment.author.username }}</p>
+                    <p class="text-muted mb-0">{{ comment.text|truncatewords:10 }}</p>
+                </div>
+            </div>
+        {% endfor %}
+
+    </ul>
+</aside>
