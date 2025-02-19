@@ -561,6 +561,17 @@ requests = "*"
 tzdata = "*"
 
 [[package]]
+name = "mistune"
+version = "3.1.2"
+description = "A sane and fast Markdown parser with useful plugins and renderers"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "mistune-3.1.2-py3-none-any.whl", hash = "sha256:4b47731332315cdca99e0ded46fc0004001c1299ff773dfb48fbe1fd226de319"},
+    {file = "mistune-3.1.2.tar.gz", hash = "sha256:733bf018ba007e8b5f2d3a9eb624034f6ee26c4ea769a98ec533ee111d504dff"},
+]
+
+[[package]]
 name = "oauthlib"
 version = "3.2.2"
 description = "A generic, spec-compliant, thorough implementation of the OAuth request-signing logic"
@@ -1188,4 +1199,4 @@ lxml = ">=3.8"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.7"
-content-hash = "1b94cc6080bcf467ecef5aa0243b2f2d7a55cdfb8e4ac67bc0308cf4461a5782"
+content-hash = "0dd3e927f670def5153a1c1340f89777173cd1e87234d5bbce8ce06a55e8074c"

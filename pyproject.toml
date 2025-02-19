@@ -29,6 +29,7 @@ django-crispy-forms = "^2.3"
 crispy-bootstrap4 = "^2024.10"
 faker = "^36.1.1"
 django-htmx = "^1.22.0"
+mistune = "^3.1.2"
 
 
 [build-system]

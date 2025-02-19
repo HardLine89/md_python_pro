@@ -2,7 +2,7 @@ import random
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count, Q, F
 from django.http import HttpResponse
 from django.utils import timezone
 from django.views.generic import ListView, DetailView
@@ -60,6 +60,12 @@ class ArticleDetailView(DetailView):
     template_name = "blog/article_detail.html"
     lookup_field = "slug"
     context_object_name = "article"
+
+    def get_object(self, queryset=None):
+        article = super().get_object(queryset)
+        # Увеличиваем количество просмотров
+        Article.objects.filter(pk=article.pk).update(views=F("views") + 1)
+        return article
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
