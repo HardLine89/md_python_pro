@@ -1,9 +1,15 @@
 {% load martortags %}
 {% load strip_links %}
 {% load django_htmx %}
+{% if not request.htmx %}
+        <!-- Заголовок будет отображаться только при первой загрузке страницы -->
+        {% if request.GET.q %}
+            <h5 class="text-center">Результаты поиска по запросу: "{{ request.GET.q }}"</h5>
+        {% endif %}
+    {% endif %}
 {% for article in articles %}
     {% if forloop.last %}
-    <div class="col-md-12 mb-5" hx-trigger="intersect once" hx-get="{% url 'blog:index' %}?page={{ articles.number|add:1 }}" hx-swap="afterend">
+    <div class="col-md-12 mb-5" hx-trigger="intersect once" hx-get="{% url 'blog:index' %}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}?page={{ articles.number|add:1 }}" hx-swap="afterend">
     {% else %}
     <div class="col-md-12 mb-5">
     {% endif %}

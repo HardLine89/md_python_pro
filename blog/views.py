@@ -1,6 +1,7 @@
 import random
 
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.search import SearchQuery, SearchVector, SearchRank
 from django.core.paginator import Paginator
 from django.db.models import Sum, Count, Q, F
 from django.http import HttpResponse
@@ -28,11 +29,25 @@ class ArticleListView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        p = Paginator(
-            Article.objects.select_related("category").prefetch_related("tags"),
-            self.paginate_by,
-        )
-        context["articles"] = p.page(context["page_obj"].number)
+        query = self.request.GET.get("q")
+        if query:
+            # Поиск статей по запросу
+            articles = Article.objects.select_related("category").prefetch_related("tags").annotate(
+                search=SearchVector("title", weight="A") + SearchVector("content", weight="B"),
+                rank=SearchRank(SearchVector("title", "content"), query),
+            ).filter(search=query).order_by("-rank")
+        else:
+            # Все статьи
+            articles = Article.objects.select_related("category").prefetch_related("tags")
+
+        # Пагинация
+        p = Paginator(articles, self.paginate_by)
+        page_number = self.request.GET.get("page")
+        page_obj = p.get_page(page_number)
+
+        # Добавляем статьи в контекст
+        context["articles"] = page_obj
+        print(context["articles"])
         context["categories"] = Category.objects.all()
         context["comments"] = Comment.objects.all().order_by("-created_at")[:3]
         context["recent_articles"] = None
@@ -72,9 +87,9 @@ class ArticleDetailView(DetailView):
         article = self.object
         article_content_type = ContentType.objects.get_for_model(article)
         context["comments"] = Comment.objects.filter(
-            content_type=article_content_type,
-            object_id=article.id  # UUID объекта
+            content_type=article_content_type, object_id=article.id  # UUID объекта
         )
+        context["categories"] = Category.objects.all()
         context["popular_week"] = None
         context["recent_articles"] = (
             Article.objects.filter(
@@ -86,7 +101,9 @@ class ArticleDetailView(DetailView):
             .annotate(
                 common_tags=Count("tags", filter=Q(tags__in=article.tags.all()))
             )  # Количество общих тегов
-            .order_by("-common_tags", "-created_at")[:5]  # Сортируем по количеству общих тегов и дате
+            .order_by("-common_tags", "-created_at")[
+                :5
+            ]  # Сортируем по количеству общих тегов и дате
         )
         context["popular_tags"] = Tag.objects.annotate(
             num_times=Count("taggit_taggeditem_items")

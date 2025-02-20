@@ -5,6 +5,21 @@
 <aside class="col-md-3 sidebar">
     <div class="card mb-5">
         <div class="card rounded-5">
+            <div class="card-body">
+                <form method="get" action="">
+                    {#            <form method="get" action="{% url 'blog:search' %}">#}
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Поиск" aria-label="Search">
+                        <button class="btn btn-outline-primary" type="submit">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-5">
+        <div class="card rounded-5">
             <h5 class="mb-0 text-center">
                 <button class="btn btn-link" type="button" data-bs-toggle="collapse"
                         data-bs-target="#categoriesCollapse" aria-expanded="false"
@@ -28,13 +43,13 @@
         </div>
     </div>
 
-    <h5 class="mb-4 text-center">{% if popular_week %}
-        Популярные статьи
-    {% elif recent_articles %}
-        Вам может понравиться
-    {% else %}
-    {% endif %}
-    </h5>
+    {#    <h5 class="mb-4 text-center">{% if popular_week %}#}
+    {#        Популярные статьи#}
+    {#    {% elif recent_articles %}#}
+    {#        Вам может понравиться#}
+    {#    {% else %}#}
+    {#    {% endif %}#}
+    {#    </h5>#}
 
     <ul class="list-unstyled mb-4">
         {% with recent_articles|default_if_none:popular_week as sidebar_articles %}
@@ -42,6 +57,15 @@
                 {% for article in sidebar_articles %}
 
                     <div class="card mb-5 rounded-5 h-100">
+                        <div class="card-header">
+                            <h5 class="text-center">{% if popular_week %}
+                                Популярные статьи
+                            {% elif recent_articles %}
+                                Вам может понравиться
+                            {% else %}
+                            {% endif %}
+                            </h5>
+                        </div>
                         <div class="mt-n3 bg-image hover-overlay mx-3 shadow-4-strong rounded-5"
                              data-mdb-ripple-init
                              data-mdb-ripple-color="light">
@@ -53,7 +77,9 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ article.title }}</h5>
                             <p class="card-text">{{ article.content|truncatewords:10|safe_markdown|strip_links }}</p>
-                            <a href="{{ article.get_absolute_url }}"><button type="button" class="btn btn-primary">Читать</button></a>
+                            <a href="{{ article.get_absolute_url }}">
+                                <button type="button" class="btn btn-primary">Читать</button>
+                            </a>
                         </div>
                         <div class="card-footer text-muted">
                             <div class="d-flex justify-content-between align-items-center">
@@ -75,9 +101,12 @@
             {% endif %}
         {% endwith %}
     </ul>
-    <h5 class="mb-3 mt-5 text-center">Популярные теги</h5>
+
     <div>
-        <div class="card">
+        <div class="card mb-5">
+            <div class="card-header">
+                <h5 class="text-center">Популярные теги</h5>
+            </div>
             <div class="card-body">
 
                 <div class="d-flex flex-wrap gap-2">
@@ -92,20 +121,42 @@
     </div>
 
 
-    <h5 class="mt-5 text-center">Последние комментарии</h5>
-    <ul class="list-unstyled mb-4">
-        {% for comment in comments %}
-            <div class="d-flex align-items-center">
+    <div class="card mb-5">
+        <div class="card-header">
+            <h5 class="text-center">Последние комментарии</h5>
+        </div>
+        <div class="card-body p-1">
+            <ul class="list-group list-group-flush">
+                {% for comment in comments %}
+                    <li class="list-group-item border-bottom p-3"> <!-- Добавляем отступы и границу -->
+                        <div class="d-flex align-items-start"> <!-- Используем flex для выравнивания -->
+                            <!-- Аватарка -->
+                            <img src="{{ comment.author.profile.avatar.url }}" alt="{{ comment.author.username }}"
+                                 class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                            <!-- Круглая аватарка -->
 
-                <img src="{{ comment.author.profile.avatar.url }}" alt="{{ comment.author.username }}"
-                     class="w-25 h-25 rounded-6 mt-3">
+                            <!-- Текст комментария -->
+                            <div class="flex-grow-1">
+                                <!-- Ссылка на статью -->
+                                <small class="text-muted">
+                                    <a href="{{ comment.content_object.get_absolute_url }}"
+                                       class="text-decoration-none">
+                                        {{ comment.content_object.title|truncatewords:5 }}
+                                    </a>
+                                </small>
 
-                <div class="ms-4">
-                    <p class="fw-bold mb-1">{{ comment.author.username }}</p>
-                    <p class="text-muted mb-0">{{ comment.text|truncatewords:10 }}</p>
-                </div>
-            </div>
-        {% endfor %}
+                                <!-- Имя автора и текст комментария -->
+                                <small class="d-block d-flex justify-content-between">
+                                    <span class="fw-bold">{{ comment.author.username }}</span>
+                                    <span class="text-muted ms-auto">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+                                </small>
+                                <span class="d-block">{{ comment.text|truncatewords:10 }}</span>
 
-    </ul>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </aside>
