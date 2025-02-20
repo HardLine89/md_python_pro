@@ -23,4 +23,4 @@ RUN poetry config virtualenvs.create false \
 
 
 # Открываем порт приложения
-EXPOSE 8000
+EXPOSE 8080

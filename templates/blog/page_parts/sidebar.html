@@ -43,13 +43,13 @@
         </div>
     </div>
 
-    {#    <h5 class="mb-4 text-center">{% if popular_week %}#}
-    {#        Популярные статьи#}
-    {#    {% elif recent_articles %}#}
-    {#        Вам может понравиться#}
-    {#    {% else %}#}
-    {#    {% endif %}#}
-    {#    </h5>#}
+        <h5 class="mb-4 text-center">{% if popular_week %}
+            Популярные статьи
+        {% elif recent_articles %}
+            Вам может понравиться
+        {% else %}
+        {% endif %}
+        </h5>
 
     <ul class="list-unstyled mb-4">
         {% with recent_articles|default_if_none:popular_week as sidebar_articles %}
@@ -57,15 +57,7 @@
                 {% for article in sidebar_articles %}
 
                     <div class="card mb-5 rounded-5 h-100">
-                        <div class="card-header">
-                            <h5 class="text-center">{% if popular_week %}
-                                Популярные статьи
-                            {% elif recent_articles %}
-                                Вам может понравиться
-                            {% else %}
-                            {% endif %}
-                            </h5>
-                        </div>
+
                         <div class="mt-n3 bg-image hover-overlay mx-3 shadow-4-strong rounded-5"
                              data-mdb-ripple-init
                              data-mdb-ripple-color="light">
@@ -146,8 +138,8 @@
                                 </small>
 
                                 <!-- Имя автора и текст комментария -->
-                                <small class="d-block d-flex justify-content-between">
-                                    <span class="fw-bold">{{ comment.author.username }}</span>
+                                <small class="d-block justify-content-between">
+                                    <span class="badge badge-secondary fw-bold mb-0 me-2">{{ comment.author.username }}</span>
                                     <span class="text-muted ms-auto">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
                                 </small>
                                 <span class="d-block">{{ comment.text|truncatewords:10 }}</span>

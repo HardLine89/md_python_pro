@@ -86,9 +86,7 @@ class ArticleDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         article = self.object
         article_content_type = ContentType.objects.get_for_model(article)
-        context["comments"] = Comment.objects.filter(
-            content_type=article_content_type, object_id=article.id  # UUID объекта
-        )
+        context["comments"] = Comment.objects.all().order_by("-created_at")[:3]
         context["categories"] = Category.objects.all()
         context["popular_week"] = None
         context["recent_articles"] = (

@@ -6,15 +6,15 @@
 
 {% block content %}
 
-<div class="col-md-12 mb-5">
-        <div class="card">
+    <div class="col-md-12 mb-5">
+        <div class="card mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"
                     style="flex: 1 1 auto; white-space: normal; word-break: break-word;">{{ article.title }}</h5>
                 {#                    <h5 class="mb-0 text-truncate" style="max-width: 70%;">{{ article.title }}</h5>#}
                 <span class="fw-bold text-end"><i class="fa-solid fa-layer-group"></i> {{ article.category }}</span>
             </div>
-            <div class="bg-image mx-auto rounded-0" >
+            <div class="bg-image mx-auto rounded-0">
                 <img src="{{ article.cover.url }}" class="img-fluid" alt="{{ article.title }}"/>
 
             </div>
@@ -45,6 +45,73 @@
                             <span class="badge bg-primary">#{{ tag.name }}</span>
                         {% endfor %}
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="flex-grow-1 text-center">
+                    <!-- Текст "Оцените статью" -->
+                    <p class="mb-3">Оцените статью</p>
+
+                    <!-- Кнопки лайков и дизлайков -->
+                    <div class="d-flex justify-content-center gap-4"> <!-- gap-4 добавляет расстояние между кнопками -->
+                        <button class="btn btn-outline-success vote-btn"
+                                data-action="like"
+                                data-article="{{ article.id }}">
+                            <i class="fa-solid fa-thumbs-up"></i>
+                            <span id="like-count">{{ article.votes.likes.count }}</span>
+                        </button>
+
+                        <button class="btn btn-outline-danger vote-btn"
+                                data-action="dislike"
+                                data-article="{{ article.id }}">
+                            <i class="fa-solid fa-thumbs-down"></i>
+                            <span id="dislike-count">{{ article.votes.dislikes.count }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <form class="mb-4" id="comment-form" method="post" data-article-id="{{ article.id }}">
+                    {% csrf_token %}
+                    <textarea name="text" class="form-control" placeholder="Напишите комментарий..."></textarea>
+                    <button type="submit" class="btn btn-primary mt-2">Отправить</button>
+                </form>
+                <hr class="hr">
+
+                <!-- Комментарии -->
+                <div id="comments">
+                    {% for comment in article.comments.all %}
+                        <div class="d-flex align-items-start mb-4">
+                            <!-- Аватар пользователя -->
+                            <div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
+                                {% if comment.author.profile.avatar %}
+                                    <img src="{{ comment.author.profile.avatar.url }}" class="img-fluid"
+                                         alt="{{ comment.author.username }}">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/50?text={{ comment.author.username|first|upper }}"
+                                         class="img-fluid" alt="No avatar">
+                                {% endif %}
+                            </div>
+
+                            <!-- Основная часть комментария -->
+                            <div class="ms-3 flex-grow-1">
+                                <div class="d-flex align-items-center mb-1">
+                                    <span class="badge badge-secondary fw-bold mb-0 me-2">{{ comment.author }}</span>
+                                    <p class="text-muted mb-0" style="font-size: 0.85rem;">
+                                        <i class="fa-solid fa-calendar"></i> {{ comment.created_at|date:"d M Y H:i" }}
+                                    </p>
+                                </div>
+                                <p class="mb-0">{{ comment.text }}</p>
+                            </div>
+                        </div>
+                        <hr class="hr">
+                    {% empty %}
+                        <p class="text-muted">Комментариев пока нет. Будьте первым!</p>
+                    {% endfor %}
                 </div>
             </div>
         </div>
