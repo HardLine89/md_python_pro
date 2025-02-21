@@ -6,8 +6,8 @@
     <div class="card mb-5">
         <div class="card rounded-5">
             <div class="card-body">
-                <form method="get" action="">
-                    {#            <form method="get" action="{% url 'blog:search' %}">#}
+                {#                <form method="get" action="">#}
+                <form method="get" action="{% url 'blog:search' %}">
                     <div class="input-group">
                         <input type="text" name="q" class="form-control" placeholder="Поиск" aria-label="Search">
                         <button class="btn btn-outline-primary" type="submit">
@@ -22,7 +22,7 @@
         <div class="card rounded-5">
             <h5 class="mb-0 text-center">
                 <button class="btn btn-link" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#categoriesCollapse" aria-expanded="false"
+                        data-bs-target="#categoriesCollapse" aria-expanded="{% if current_category %}true{% else %}false{% endif %}"
                         aria-controls="categoriesCollapse" onclick="toggleIcon(this)">
                             <span style="font-size: 1.25rem;
                                     color: #fff;
@@ -33,23 +33,28 @@
             </h5>
         </div>
 
-        <div class="collapse" id="categoriesCollapse">
+        <div class="collapse {% if current_category %}show{% endif %}" id="categoriesCollapse">
             <ul class="list-group list-group-flush">
                 {% for category in categories %}
-                    <li class="list-group-item text-center list-group-item-action"
-                        data-mdb-ripple-init>{{ category.title|capfirst }}</li>
+                    <li class="list-group-item position-relative text-center list-group-item-action {% if category.slug == current_category %}active{% endif %}"
+                        data-mdb-ripple-init>
+                        <a href="{% url 'blog:category_articles' slug=category.slug %}"
+                           class="text-decoration-none text-reset stretched-link">
+                            {{ category.title|capfirst }}
+                        </a>
+                    </li>
                 {% endfor %}
             </ul>
         </div>
     </div>
 
-        <h5 class="mb-4 text-center">{% if popular_week %}
-            Популярные статьи
-        {% elif recent_articles %}
-            Вам может понравиться
-        {% else %}
-        {% endif %}
-        </h5>
+    <h5 class="mb-4 text-center">{% if popular_week %}
+        Популярные статьи
+    {% elif recent_articles %}
+        Вам может понравиться
+    {% else %}
+    {% endif %}
+    </h5>
 
     <ul class="list-unstyled mb-4">
         {% with recent_articles|default_if_none:popular_week as sidebar_articles %}

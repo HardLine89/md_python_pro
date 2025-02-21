@@ -42,6 +42,9 @@ class Category(DateMixin, SlugifyMixin, models.Model):
         verbose_name="URL", max_length=255, blank=False, null=False, unique=True
     )
 
+    def get_absolute_url(self):
+        return reverse("blog:category_list", kwargs={"slug": self.slug})
+
     def __str__(self):
         return self.title
 
