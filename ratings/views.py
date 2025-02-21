@@ -38,10 +38,13 @@ def vote_article(request, article_id):
             else:
                 vote.vote = 1 if action == "like" else -1
                 vote.save()  # Меняем голос
-
+        user_vote = None
+        if request.user.is_authenticated:
+            user_vote = article.votes.user_vote(request.user, article)
         return JsonResponse(
             {
                 "success": True,
+                "user_vote": user_vote,
                 "likes": LikeDislike.objects.likes()
                 .filter(content_type=content_type, object_id=article.id)
                 .count(),

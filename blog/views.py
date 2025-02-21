@@ -86,6 +86,10 @@ class ArticleDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         article = self.object
         article_content_type = ContentType.objects.get_for_model(article)
+        user_vote = None
+        if self.request.user.is_authenticated:
+            user_vote = article.votes.user_vote(self.request.user, article)
+        context["user_vote"] = user_vote
         context["comments"] = Comment.objects.all().order_by("-created_at")[:3]
         context["categories"] = Category.objects.all()
         context["popular_week"] = None

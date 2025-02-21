@@ -35,7 +35,7 @@
                             <span class="me-3"><i
                                     class="fa-solid fa-thumbs-up"></i> {{ article.votes.likes.count }}</span>
                         <span class="me-3"><i
-                                class="fa-solid fa-thumbs-down"></i> {{ article.votes.likes.count }}</span>
+                                class="fa-solid fa-thumbs-down"></i> {{ article.votes.dislikes.count }}</span>
                         <span class="me-3"><i class="fa-solid fa-comment"></i> {{ article.comments.count }}</span>
                         <span class="me-3"><i class="fa-solid fa-eye"></i> {{ article.views }}</span>
                     </div>
@@ -56,14 +56,14 @@
 
                     <!-- Кнопки лайков и дизлайков -->
                     <div class="d-flex justify-content-center gap-4"> <!-- gap-4 добавляет расстояние между кнопками -->
-                        <button class="btn btn-outline-success vote-btn"
+                        <button class="btn {% if user_vote == 1 %}btn-success{% else %}btn-outline-success{% endif %} vote-btn"
                                 data-action="like"
                                 data-article="{{ article.id }}">
                             <i class="fa-solid fa-thumbs-up"></i>
                             <span id="like-count">{{ article.votes.likes.count }}</span>
                         </button>
 
-                        <button class="btn btn-outline-danger vote-btn"
+                        <button class="btn {% if user_vote == -1 %}btn-danger{% else %}btn-outline-danger{% endif %} vote-btn"
                                 data-action="dislike"
                                 data-article="{{ article.id }}">
                             <i class="fa-solid fa-thumbs-down"></i>
