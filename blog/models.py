@@ -98,6 +98,9 @@ class Article(DateMixin, SlugifyMixin, models.Model):
     def get_absolute_url(self):
         return reverse("blog:article_detail", kwargs={"slug": self.slug})
 
+    def get_comments(self):
+        return self.comments.filter(parent__isnull=True)
+
     def __str__(self):
         return f"{self.title} - {self.category}"
 

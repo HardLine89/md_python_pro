@@ -59,9 +59,10 @@
             {% block extra_body %}
             {% endblock extra_body %}
         </main>
+    {% if "/accounts/" not in request.path %}
         <!-- Сайдбар -->
         {% include 'blog/page_parts/sidebar.html' %}
-
+    {% endif %}
     </div>
 </div>
 

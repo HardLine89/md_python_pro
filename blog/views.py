@@ -37,7 +37,7 @@ class SearchListView(CommonContextMixin, ListView):
             .prefetch_related("tags")
             .annotate(
                 search=SearchVector("title", weight="A")
-                       + SearchVector("content", weight="B"),
+                + SearchVector("content", weight="B"),
                 rank=SearchRank(SearchVector("title", "content"), query),
             )
             .filter(search=query)
@@ -82,9 +82,7 @@ class ArticleListView(CommonContextMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        articles = Article.objects.select_related("category").prefetch_related(
-            "tags"
-        )
+        articles = Article.objects.select_related("category").prefetch_related("tags")
         # Пагинация
         p = Paginator(articles, self.paginate_by)
         page_number = self.request.GET.get("page")
@@ -137,7 +135,7 @@ class ArticleDetailView(CommonContextMixin, DetailView):
                 common_tags=Count("tags", filter=Q(tags__in=article.tags.all()))
             )  # Количество общих тегов
             .order_by("-common_tags", "-created_at")[
-            :5
+                :5
             ]  # Сортируем по количеству общих тегов и дате
         )
         return context
@@ -145,6 +143,7 @@ class ArticleDetailView(CommonContextMixin, DetailView):
 
 class ArticleByCategoryView(CommonContextMixin, ListView):
     """Вывод всех статей по выбранной категории"""
+
     model = Article
     template_name = "blog/index.html"  # Используем тот же шаблон
     context_object_name = "articles"
@@ -159,7 +158,11 @@ class ArticleByCategoryView(CommonContextMixin, ListView):
     def get_queryset(self):
         """Фильтруем статьи по категории"""
         self.category = get_object_or_404(Category, slug=self.kwargs["slug"])
-        return Article.objects.filter(category=self.category).select_related("category").prefetch_related("tags")
+        return (
+            Article.objects.filter(category=self.category)
+            .select_related("category")
+            .prefetch_related("tags")
+        )
 
     def get_context_data(self, **kwargs):
         """Добавляем категории и пагинацию в контекст"""
@@ -185,6 +188,56 @@ class ArticleByCategoryView(CommonContextMixin, ListView):
             .order_by("-sum_views", "sum_votes")[:3]
         )
         context["current_category"] = self.category.slug
+        return context
+
+
+class ArticleByTagView(CommonContextMixin, ListView):
+    """Вывод всех статей по выбранной категории"""
+
+    model = Article
+    template_name = "blog/index.html"  # Используем тот же шаблон
+    context_object_name = "articles"
+    paginate_by = 10
+
+    def get_template_names(self, *args, **kwargs):
+        if self.request.htmx:
+            return "blog/includes/article_list_card.html"
+        else:
+            return self.template_name
+
+    def get_queryset(self):
+        """Фильтруем статьи по тегу"""
+        self.tag = get_object_or_404(Tag, slug=self.kwargs["tag"])
+        return (
+            Article.objects.filter(tags=self.tag)
+            .select_related("category")
+            .prefetch_related("tags")
+        )
+
+    def get_context_data(self, **kwargs):
+        """Добавляем категории и пагинацию в контекст"""
+        context = super().get_context_data(**kwargs)
+
+        # Пагинация
+        articles = self.get_queryset()
+        p = Paginator(articles, self.paginate_by)
+        page_number = self.request.GET.get("page")
+        page_obj = p.get_page(page_number)
+
+        # Добавляем статьи и текущую категорию в контекст
+        context["articles"] = page_obj
+        context["popular_week"] = (
+            Article.objects.all()
+            .filter(
+                created_at__range=[
+                    timezone.now() - timezone.timedelta(days=7),
+                    timezone.now(),
+                ]
+            )
+            .annotate(sum_views=Sum("views"), sum_votes=Sum("votes"))
+            .order_by("-sum_views", "sum_votes")[:3]
+        )
+        context["current_tag"] = self.tag
         return context
 
 

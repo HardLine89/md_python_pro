@@ -12,8 +12,11 @@
         <div class="col-md-12 mb-5" hx-trigger="intersect once" hx-get="
                  {% if current_category %}
                     {% url 'blog:category_articles' slug=current_category %}?page={{ articles.number|add:1 }}
+                 {% elif current_tag %}
+                    {% url 'blog:tag_articles' tag=current_tag %}?page={{ articles.number|add:1 }}
                  {% else %}
-                    {% url 'blog:index' %}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}?page={{ articles.number|add:1 }}
+
+            {% url 'blog:index' %}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}?page={{ articles.number|add:1 }}
                  {% endif %}" hx-swap="afterend">
     {% else %}
         <div class="col-md-12 mb-5">
@@ -23,8 +26,9 @@
         <h5 class="mb-0"
             style="flex: 1 1 auto; white-space: normal; word-break: break-word;">{{ article.title }}</h5>
         {#                    <h5 class="mb-0 text-truncate" style="max-width: 70%;">{{ article.title }}</h5>#}
-        <span class="fw-bold text-end"><i class="fa-solid fa-layer-group"></i> <a href="{% url 'blog:category_articles' slug=article.category.slug %}"
-                           class="text-decoration-none text-reset">
+        <span class="fw-bold text-end"><i class="fa-solid fa-layer-group"></i> <a
+                href="{% url 'blog:category_articles' slug=article.category.slug %}"
+                class="text-decoration-none text-reset">
                             {{ article.category.title|capfirst }}
                         </a></span>
     </div>
@@ -59,7 +63,13 @@
             <div class="text-end">
 
                 {% for tag in article.tags.all %}
-                    <span class="badge bg-primary">#{{ tag.name }}</span>
+                    <span class="badge bg-primary">
+                    <a
+                            href="{% url 'blog:tag_articles' tag=tag %}"
+                            class="text-decoration-none text-reset">
+                        #{{ tag.name }}
+                    </a>
+                    </span>
                 {% endfor %}
             </div>
         </div>

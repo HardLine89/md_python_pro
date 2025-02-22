@@ -48,56 +48,59 @@
                 </div>
             </div>
         </div>
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="flex-grow-1 text-center">
-                    <!-- Текст "Оцените статью" -->
-                    <p class="mb-3">Оцените статью</p>
+        {% if request.user.is_authenticated %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="flex-grow-1 text-center">
+                        <!-- Текст "Оцените статью" -->
+                        <p class="mb-3">Оцените статью</p>
 
-                    <!-- Кнопки лайков и дизлайков -->
-                    <div class="d-flex justify-content-center gap-4"> <!-- gap-4 добавляет расстояние между кнопками -->
-                        <button class="btn {% if user_vote == 1 %}btn-success{% else %}btn-outline-success{% endif %} vote-btn"
-                                data-action="like"
-                                data-article="{{ article.id }}">
-                            <i class="fa-solid fa-thumbs-up"></i>
-                            <span id="like-count">{{ article.votes.likes.count }}</span>
-                        </button>
+                        <!-- Кнопки лайков и дизлайков -->
+                        <div class="d-flex justify-content-center gap-4">
+                            <!-- gap-4 добавляет расстояние между кнопками -->
+                            <button class="btn {% if user_vote == 1 %}btn-success{% else %}btn-outline-success{% endif %} vote-btn"
+                                    data-action="like"
+                                    data-article="{{ article.id }}">
+                                <i class="fa-solid fa-thumbs-up"></i>
+                                <span id="like-count">{{ article.votes.likes.count }}</span>
+                            </button>
 
-                        <button class="btn {% if user_vote == -1 %}btn-danger{% else %}btn-outline-danger{% endif %} vote-btn"
-                                data-action="dislike"
-                                data-article="{{ article.id }}">
-                            <i class="fa-solid fa-thumbs-down"></i>
-                            <span id="dislike-count">{{ article.votes.dislikes.count }}</span>
-                        </button>
+                            <button class="btn {% if user_vote == -1 %}btn-danger{% else %}btn-outline-danger{% endif %} vote-btn"
+                                    data-action="dislike"
+                                    data-article="{{ article.id }}">
+                                <i class="fa-solid fa-thumbs-down"></i>
+                                <span id="dislike-count">{{ article.votes.dislikes.count }}</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card mb-3">
+        {% endif %}
+        <div class="card mb-3" id="formComment">
             <div class="card-body">
-                <form class="mb-4" id="comment-form" method="post" data-article-id="{{ article.id }}">
-                    {% csrf_token %}
-                    <textarea name="text" class="form-control" placeholder="Напишите комментарий..."></textarea>
-                    <button type="submit" class="btn btn-primary mt-2">Отправить</button>
-                </form>
+                {% if request.user.is_authenticated %}
+                    <form class="mb-4" id="comment-form" method="post" data-article-id="{{ article.id }}">
+                        {% csrf_token %}
+                        {#                        <input type="hidden" name="parent" id="contactparent" value="">#}
+                        <textarea name="text" class="form-control" placeholder="Напишите комментарий..."
+                                  id="contactcomment"></textarea>
+                        <button type="submit" class="btn btn-primary mt-2">Отправить</button>
+                    </form>
+                {% else %}
+                    <div class="text-center">
+                        <span>Чтобы оставлять комментарии, вам нужно зарегистрироваться или войти</span>
+                    </div>
+                {% endif %}
                 <hr class="hr">
 
                 <!-- Комментарии -->
                 <div id="comments">
-                    {% for comment in article.comments.all %}
+                    {% for comment in article.get_comments %}
                         <div class="d-flex align-items-start mb-4">
-                            <!-- Аватар пользователя -->
                             <div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
-                                {% if comment.author.profile.avatar %}
-                                    <img src="{{ comment.author.profile.avatar.url }}" class="img-fluid"
-                                         alt="{{ comment.author.username }}">
-                                {% else %}
-                                    <img src="https://via.placeholder.com/50?text={{ comment.author.username|first|upper }}"
-                                         class="img-fluid" alt="No avatar">
-                                {% endif %}
+                                <img src="{{ comment.author.profile.avatar.url }}" class="img-fluid"
+                                     alt="{{ comment.author.username }}">
                             </div>
-
-                            <!-- Основная часть комментария -->
                             <div class="ms-3 flex-grow-1">
                                 <div class="d-flex align-items-center mb-1">
                                     <span class="badge badge-secondary fw-bold mb-0 me-2">{{ comment.author }}</span>
@@ -106,6 +109,57 @@
                                     </p>
                                 </div>
                                 <p class="mb-0">{{ comment.text }}</p>
+                                <button class="btn btn-sm btn-primary text-muted mb-3"
+                                        data-comment-id="{{ comment.id }}"
+                                        onclick="showReplyForm({{ comment.id }})">Ответить
+                                </button>
+
+
+                                <!-- Форма ответа (скрытая) -->
+                                <div id="reply-form-{{ comment.id }}" class="d-none">
+                    <textarea id="reply-text-{{ comment.id }}" class="form-control mt-2"
+                              placeholder="Ответить..."></textarea>
+                                    <button class="btn btn-primary btn-sm mt-1 mb-3"
+                                            data-comment-id="{{ comment.id }}" data-article-id="{{ article.id }}"
+                                            onclick="submitReply(this)">Отправить
+                                    </button>
+                                </div>
+
+                                <!-- Здесь будут появляться ответы -->
+                                <div id="replies-{{ comment.id }}" class="ms-5">
+                                    {% for reply in comment.children.all %}
+                                        <div class="d-flex align-items-start mb-2 mt-2">
+                                            <div class="rounded-circle overflow-hidden"
+                                                 style="width: 40px; height: 40px;">
+                                                <img src="{{ reply.author.profile.avatar.url }}" class="img-fluid"
+                                                     alt="{{ reply.author.username }}">
+                                            </div>
+                                            <div class="ms-3 flex-grow-1">
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <span class="badge badge-secondary fw-bold mb-0 me-2">{{ reply.author }}</span>
+                                                    <p class="text-muted mb-0" style="font-size: 0.85rem;">
+                                                        <i class="fa-solid fa-calendar"></i> {{ reply.created_at|date:"d M Y H:i" }}
+                                                    </p>
+                                                </div>
+                                                <p class="mb-0">{{ reply.text }}</p>
+                                                <button class="btn btn-sm btn-link text-muted"
+                                                        data-comment-id="{{ comment.id }}"
+                                                        onclick="showReplyForm({{ comment.id }})">Ответить
+                                                </button>
+                                                <div id="reply-form-{{ reply.id }}" class="d-none">
+                                                    <textarea id="reply-text-{{ reply.id }}" class="form-control mt-2"
+                                                              placeholder="Ответить..."></textarea>
+                                                    <button class="btn btn-primary btn-sm mt-1"
+                                                            data-comment-id="{{ reply.id }}"
+                                                            data-article-id="{{ article.id }}"
+                                                            onclick="submitReply(this)">Отправить
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                         <hr class="hr">
@@ -113,8 +167,14 @@
                         <p class="text-muted">Комментариев пока нет. Будьте первым!</p>
                     {% endfor %}
                 </div>
+
             </div>
         </div>
     </div>
-
+    {#    <script>#}
+    {#        function addCommentReply(name, id) {#}
+    {#            document.getElementById("contactparent").value = id;#}
+    {#            document.getElementById("contactcomment").innerText = `${name}, `#}
+    {#        }#}
+    {#    </script>#}
 {% endblock %}

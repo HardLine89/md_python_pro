@@ -11,12 +11,12 @@ from .models import Comment
 
 
 @login_required
-@csrf_exempt
 def add_comment(request, article_id):
     if request.method == "POST":
         data = json.loads(request.body)
         text = data.get("text")
-
+        parent_id = data.get("parent_id")
+        print(parent_id)
         if not text.strip():
             return JsonResponse(
                 {"error": "Комментарий не может быть пустым"}, status=400
@@ -30,6 +30,13 @@ def add_comment(request, article_id):
         comment = Comment.objects.create(
             author=request.user, text=text, content_object=article
         )
+        if parent_id:
+            try:
+                parent_comment = Comment.objects.get(id=parent_id)
+                comment.parent = parent_comment  # Устанавливаем родителя
+                comment.save()
+            except Comment.DoesNotExist:
+                return JsonResponse({"error": "Родительский комментарий не найден"}, status=404)
 
         # Форматируем дату для ответа
         formatted_date = date_format(localtime(comment.created_at), "d M Y H:i")
