@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-
+from django.utils.translation import gettext_lazy as _
 from utils.path_helpers import profile_avatar_path
 
 
@@ -26,7 +26,7 @@ class Profile(models.Model):
     )
 
     def __str__(self):
-        return f"{self.user.username}"
+        return str(_(f"{self.user}"))
 
     class Meta:
         verbose_name = "Профиль"

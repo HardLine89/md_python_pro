@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load martortags %}
+{% load strip_links %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <div class="col-md-12 mb-5">
+        {{ user.profile.avatar.url }}
+        {{ user.email }}
+        </div>
+    {% else %}
+        <p class="text-center">Вы должны авторизоваться для просмотра этой страницы</p>
+    {% endif %}
+{% endblock %}

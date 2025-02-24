@@ -128,7 +128,7 @@ class DjangoSettings(BaseSettings):
     ACCOUNT_AUTHENTICATION_METHOD: str = "email"
     ACCOUNT_EMAIL_REQUIRED: bool = True
     ACCOUNT_UNIQUE_EMAIL: bool = True
-    ACCOUNT_USERNAME_REQUIRED: bool = False
+    ACCOUNT_USERNAME_REQUIRED: bool = True
     ACCOUNT_USER_MODEL_USERNAME_FIELD: str | None = None
 
     AUTHENTICATION_BACKENDS: List[str] = [
