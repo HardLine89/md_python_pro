@@ -28,7 +28,7 @@ class ArticleAdmin(admin.ModelAdmin):
         "votes_info",
         "comments_info",
     )
-    list_filter = ("category",)
+    list_filter = ("category", "author")
     search_fields = ("title", "content")
     list_per_page = 10
     ordering = ("-created_at",)

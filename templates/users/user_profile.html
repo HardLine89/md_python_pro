@@ -2,13 +2,51 @@
 {% load martortags %}
 {% load strip_links %}
 
-{% block title %}{{ article.title }}{% endblock %}
+{% block title %}Профиль пользователя - {{ user.username }}{% endblock %}
 
 {% block content %}
     {% if request.user.is_authenticated %}
         <div class="col-md-12 mb-5">
-        {{ user.profile.avatar.url }}
-        {{ user.email }}
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5 class="mb-0">{{ user.username }}</h5>
+                </div>
+                <div class="card-body d-flex flex-column flex-md-row align-items-center">
+                    <!-- Аватар слева -->
+                    <div class="ms-5 me-5 mb-4 mb-md-0">
+                        <img src="{{ user.profile.avatar.url }}" class="rounded-circle" width="200" height="200"
+                             alt="{{ user.username }}">
+                    </div>
+                    <!-- Информация справа (центрируем по высоте и по ширине) -->
+                    <div class="d-flex flex-column align-items-center justify-content-center flex-grow-1 text-center me-5">
+                        <table class="table table-borderless ms-md-0 ms-5"
+                               style="border-top: none; background-color: transparent;">
+                            <tbody>
+                            <tr>
+                                <td class="text-start bg-transparent"><strong>Email:</strong></td>
+                                <td class="text-start bg-transparent">{{ user.email }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start bg-transparent"><strong>О себе:</strong></td>
+                                <td class="text-start bg-transparent">{{ user.profile.about }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start bg-transparent"><strong>Дата регистрации:</strong></td>
+                                <td class="text-start bg-transparent">{{ user.date_joined }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start bg-transparent"><strong>Статей:</strong></td>
+                                <td class="text-start bg-transparent">{{ user.article_set.count }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start bg-transparent"><strong>Комментарии:</strong></td>
+                                <td class="text-start bg-transparent">{{ user.comment_set.count }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     {% else %}
         <p class="text-center">Вы должны авторизоваться для просмотра этой страницы</p>

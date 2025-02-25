@@ -21,12 +21,12 @@ class Profile(models.Model):
     about = models.TextField(
         blank=True,
         null=True,
-        max_length=500,
+        max_length=200,
         verbose_name="О пользователе",
     )
 
     def __str__(self):
-        return str(_(f"{self.user}"))
+        return str(_(f"Профиль пользователя {self.user}"))
 
     class Meta:
         verbose_name = "Профиль"
