@@ -79,7 +79,13 @@
         {% endif %}
     </div>
 </div>
-
+{% if not user.is_authenticated %}
+    <script src="//accounts.google.com/gsi/client" async></script>
+<div id="g_id_onload"
+     data-client_id="308198633157-28fod69mhp16bol33o6v5jg7mhaplid5.apps.googleusercontent.com"
+     data-login_uri="{% url 'google_login_by_token' %}">
+</div>
+{% endif %}
 
 <!-- Футер -->
 {% include 'blog/page_parts/footer.html' %}
