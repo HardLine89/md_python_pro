@@ -1,9 +1,18 @@
 {% extends 'base.html' %}
 {% load martortags %}
 {% load strip_links %}
-
+{% load i18n %}
 {% block title %}Профиль пользователя - {{ user.username }}{% endblock %}
-
+{#{% block body %}#}
+{#    {% if messages %}#}
+{#        <div>#}
+{#            <strong>{% trans "Messages:" %}</strong>#}
+{#            <ul>#}
+{#                {% for message in messages %}#}
+{#                    <li>{{ message }}</li>{% endfor %}#}
+{#            </ul>#}
+{#        </div>#}
+{#    {% endif %}#}
 {% block content %}
     {% if request.user.is_authenticated %}
         <div class="col-md-12 mb-5">
@@ -52,3 +61,4 @@
         <p class="text-center">Вы должны авторизоваться для просмотра этой страницы</p>
     {% endif %}
 {% endblock %}
+{#{% endblock %}#}

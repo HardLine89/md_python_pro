@@ -1,0 +1,110 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load martortags %}
+{% load i18n %}
+{% load strip_links %}
+<aside class="col-md-3 sidebar">
+    <div class="card mb-5">
+        <div class="card rounded-5">
+            <div class="card-body">
+                {#                <form method="get" action="">#}
+                <form method="get" action="{% url 'blog:search' %}">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Поиск" aria-label="Search">
+                        <button class="btn btn-outline-primary" type="submit">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="card mb-5">
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% if user.is_authenticated %}
+                        {% url 'users:profile' as profile_url_ %}
+                        {% if "/accounts/profile" not in request.path %}
+                            <li class="list-group-item">
+                                <a href="{{ profile_url_ }}" class="text-decoration-none text-reset stretched-link">Назад
+                                    в профиль</a>
+                            </li>
+                        {% endif %}
+                        {% url 'account_email' as email_url_ %}
+                        {% if email_url_ %}
+                            <li class="list-group-item">
+                                <a href="{{ email_url_ }}"
+                                   class="text-decoration-none text-reset stretched-link">{% trans "Change Email" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'account_change_password' as change_password_url_ %}
+                        {% if change_password_url_ %}
+                            <li class="list-group-item">
+                                <a href="{{ change_password_url_ }}"
+                                   class="text-decoration-none text-reset stretched-link">{% trans "Change Password" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'socialaccount_connections' as connections_url_ %}
+                        {% if connections_url_ %}
+                            <li class="list-group-item">
+                                <a href="{{ connections_url_ }}"
+                                   class="text-decoration-none text-reset stretched-link">{% trans "Account Connections" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'mfa_index' as mfa_url_ %}
+                        {% if mfa_url_ %}
+                            <li class="list-group-item">
+                                <a href="{{ mfa_url_ }}"
+                                   class="text-decoration-none text-reset stretched-link">{% trans "Two-Factor Authentication" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'usersessions_list' as usersessions_list_url_ %}
+                        {% if usersessions_list_url_ %}
+                            <li class="list-group-item">
+                                <a href="{{ usersessions_list_url_ }}"
+                                   class="text-decoration-none text-reset stretched-link">{% trans "Sessions" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'account_logout' as logout_url_ %}
+                        {% if logout_url_ %}
+                            <li class="list-group-item">
+                                <a href="{{ logout_url_ }}"
+                                   class="text-decoration-none text-reset stretched-link">{% trans "Sign Out" %}</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        {% url 'account_login' as login_url_ %}
+                        {% if login_url_ %}
+                            <li class="list-group-item">
+                                <a href="{{ login_url_ }}"
+                                   class="text-decoration-none text-reset stretched-link">{% trans "Sign In" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'account_signup' as signup_url_ %}
+                        {% if signup_url_ %}
+                            <li class="list-group-item">
+                                <a href="{{ signup_url_ }}"
+                                   class="text-decoration-none text-reset stretched-link">{% trans "Sign Up" %}</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <div class="card mb-5" style="position: sticky;
+                                  top: 90px; /* Отступ от верха, чтобы не перекрывать navbar */
+                                  z-index: 1020; /* Чтобы оставаться выше других элементов */">
+        <div class="card-header">
+
+        </div>
+        <div class="card-body">
+            <div class="d-flex flex-column align-items-center">
+                <img src="https://i87.fastpic.ru/big/2019/0816/93/7c842216cbcc93843fa6d0f16502d193.jpg?r=1"
+                     alt="Реклама" class="img-fluid"/>
+            </div>
+        </div>
+    </div>
+</aside>

@@ -103,7 +103,7 @@
                             </div>
                             <div class="ms-3 flex-grow-1">
                                 <div class="d-flex align-items-center mb-1">
-                                    <span class="badge badge-secondary fw-bold mb-0 me-2">{{ comment.author }}</span>
+                                    <span class="badge {% if comment.author.is_staff %}badge-success{% else %}badge-secondary{% endif %} fw-bold mb-0 me-2">{{ comment.author }}</span>
                                     <p class="text-muted mb-0" style="font-size: 0.85rem;">
                                         <i class="fa-solid fa-calendar"></i> {{ comment.created_at|date:"d M Y H:i" }}
                                     </p>
@@ -136,7 +136,7 @@
                                             </div>
                                             <div class="ms-3 flex-grow-1">
                                                 <div class="d-flex align-items-center mb-1">
-                                                    <span class="badge badge-secondary fw-bold mb-0 me-2">{{ reply.author }}</span>
+                                                    <span class="badge {% if reply.author.is_staff %}badge-success{% else %}badge-secondary{% endif %} fw-bold mb-0 me-2">{{ reply.author }}</span>
                                                     <p class="text-muted mb-0" style="font-size: 0.85rem;">
                                                         <i class="fa-solid fa-calendar"></i> {{ reply.created_at|date:"d M Y H:i" }}
                                                     </p>

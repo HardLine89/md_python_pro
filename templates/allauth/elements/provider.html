@@ -1,3 +1,8 @@
-<li>
-    <a title="{{ attrs.name }}" href="{{ attrs.href }}">{{ attrs.name }}</a>
+<li class="list-group-item">
+
+    <a title="{{ attrs.name }}" href="{{ attrs.href }}" style="
+    font-size: 30px;
+    color: white;
+"><i class="fa-brands fa-{{ attrs.name|lower }}"></i></a>
+
 </li>
