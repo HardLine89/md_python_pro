@@ -31,5 +31,22 @@ class Comment(DateMixin, models.Model):
         return f"{self.author} - {self.content_type} - {self.content_object}"
 
     class Meta:
+        ordering = ["-created_at"]
         verbose_name = "Коммент"
         verbose_name_plural = "Комменты"
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="notifications"
+    )
+    sender = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="sent_notifications"
+    )
+    comment = models.ForeignKey("Comment", on_delete=models.CASCADE)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Уведомление"
+        verbose_name_plural = "Уведомления"

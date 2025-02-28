@@ -27,17 +27,17 @@
                 />
             </a>
             <!-- Left links -->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Team</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Projects</a>
-                </li>
-            </ul>
+            {#            <ul class="navbar-nav me-auto mb-2 mb-lg-0">#}
+            {#                <li class="nav-item">#}
+            {#                    <a class="nav-link" href="#">Dashboard</a>#}
+            {#                </li>#}
+            {#                <li class="nav-item">#}
+            {#                    <a class="nav-link" href="#">Team</a>#}
+            {#                </li>#}
+            {#                <li class="nav-item">#}
+            {#                    <a class="nav-link" href="#">Projects</a>#}
+            {#                </li>#}
+            {#            </ul>#}
             <!-- Left links -->
         </div>
 
@@ -52,32 +52,31 @@
 
             <!-- Notifications -->
             <div class="dropdown">
-                <a
-                        data-mdb-dropdown-init
-                        class="text-reset me-3 dropdown-toggle hidden-arrow"
-                        href="#"
-                        id="navbarDropdownMenuLink"
-                        role="button"
-                        aria-expanded="false"
+                <a data-mdb-dropdown-init
+                   class="text-reset me-3 dropdown-toggle hidden-arrow"
+                   href="#"
+                   id="navbarDropdownMenuLink"
+                   role="button"
+                   aria-expanded="false"
                 >
                     <i class="fas fa-bell"></i>
-                    <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                    <span id="notification-badge" class="badge rounded-pill badge-notification bg-danger"
+                          style="display: none;">0</span>
                 </a>
-                <ul
-                        class="dropdown-menu dropdown-menu-end"
-                        aria-labelledby="navbarDropdownMenuLink"
-                >
-                    <li>
-                        <a class="dropdown-item" href="#">Some news</a>
+                <ul class="dropdown-menu dropdown-menu-end" id="notification-dropdown"
+                    aria-labelledby="navbarDropdownMenuLink">
+                    <li id="notification-list">
+                        <p class="dropdown-item text-muted">Загрузка...</p>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">Another news</a>
+                        <hr class="dropdown-divider">
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <button id="clear-notifications" class="dropdown-item text-danger">Очистить все</button>
                     </li>
                 </ul>
             </div>
+
             <!-- Avatar -->
             <div class="dropdown">
                 <a
@@ -90,20 +89,20 @@
                 >
                     {% if request.user.is_authenticated %}
                         <img
-                            src="{{ request.user.profile.avatar.url }}"
-                            class="rounded-circle"
-                            height="40"
-                            alt="{{ request.user.username }}"
-                            loading="lazy"
-                    />
+                                src="{{ request.user.profile.avatar.url }}"
+                                class="rounded-circle"
+                                height="40"
+                                alt="{{ request.user.username }}"
+                                loading="lazy"
+                        />
                     {% else %}
                         <img
-                            src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
-                            class="rounded-circle"
-                            height="25"
-                            alt="Black and White Portrait of a Man"
-                            loading="lazy"
-                    />
+                                src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                                class="rounded-circle"
+                                height="25"
+                                alt="Black and White Portrait of a Man"
+                                loading="lazy"
+                        />
                     {% endif %}
 
                 </a>

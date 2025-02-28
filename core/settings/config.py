@@ -152,7 +152,7 @@ class DjangoSettings(BaseSettings):
     ACCOUNT_EMAIL_REQUIRED: bool = True
     ACCOUNT_UNIQUE_EMAIL: bool = True
     ACCOUNT_USERNAME_REQUIRED: bool = True
-    ACCOUNT_USER_MODEL_USERNAME_FIELD: str | None = None
+    ACCOUNT_USER_MODEL_USERNAME_FIELD: str | None = "username"
 
     AUTHENTICATION_BACKENDS: List[str] = [
         "django.contrib.auth.backends.ModelBackend",
