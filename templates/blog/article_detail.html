@@ -96,7 +96,7 @@
                 <!-- Комментарии -->
                 <div id="comments">
                     {% for comment in article.get_comments %}
-                        <div class="d-flex align-items-start mb-4">
+                        <div class="d-flex align-items-start mb-4 comment" id="comment-{{ comment.id }}">
                             <div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
                                 <img src="{{ comment.author.profile.avatar.url }}" class="img-fluid"
                                      alt="{{ comment.author.username }}">
@@ -128,7 +128,7 @@
                                 <!-- Здесь будут появляться ответы -->
                                 <div id="replies-{{ comment.id }}" class="ms-5">
                                     {% for reply in comment.children.all %}
-                                        <div class="d-flex align-items-start mb-2 mt-2">
+                                        <div class="d-flex align-items-start mb-2 mt-2 comment" id="comment-{{ reply.id }}">
                                             <div class="rounded-circle overflow-hidden"
                                                  style="width: 40px; height: 40px;">
                                                 <img src="{{ reply.author.profile.avatar.url }}" class="img-fluid"

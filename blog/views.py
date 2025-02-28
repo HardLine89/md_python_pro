@@ -1,7 +1,5 @@
 import random
-
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.search import SearchQuery, SearchVector, SearchRank
+from django.contrib.postgres.search import SearchVector, SearchRank
 from django.core.paginator import Paginator
 from django.db.models import Sum, Count, Q, F
 from django.http import HttpResponse
@@ -10,10 +8,9 @@ from django.utils import timezone
 from django.views.generic import ListView, DetailView
 from faker import Faker
 from taggit.models import Tag
-
 from blog.models import Article, Category
-from comments.models import Comment
 from utils.view_mixins import CommonContextMixin
+
 
 
 class SearchListView(CommonContextMixin, ListView):
@@ -66,12 +63,18 @@ class SearchListView(CommonContextMixin, ListView):
         return context
 
 
+
 class ArticleListView(CommonContextMixin, ListView):
     model = Article
     template_name = "blog/index.html"
     context_object_name = "articles"
     lookup_field = "slug"
     paginate_by = 10
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return super().dispatch(request, *args, **kwargs)  # Отключаем кеш
+        return super().dispatch(request, *args, **kwargs)
 
     def get_template_names(self, *args, **kwargs):
         if self.request.htmx:
@@ -103,6 +106,7 @@ class ArticleListView(CommonContextMixin, ListView):
         )
 
         return context
+
 
 
 class ArticleDetailView(CommonContextMixin, DetailView):
@@ -139,6 +143,7 @@ class ArticleDetailView(CommonContextMixin, DetailView):
             ]  # Сортируем по количеству общих тегов и дате
         )
         return context
+
 
 
 class ArticleByCategoryView(CommonContextMixin, ListView):
@@ -189,6 +194,7 @@ class ArticleByCategoryView(CommonContextMixin, ListView):
         )
         context["current_category"] = self.category.slug
         return context
+
 
 
 class ArticleByTagView(CommonContextMixin, ListView):

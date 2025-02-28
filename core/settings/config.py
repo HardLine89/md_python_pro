@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Any
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings
 
@@ -18,6 +18,10 @@ class DjangoSettings(BaseSettings):
     GOOGLE_CLIENT_ID: str = Field(env="GOOGLE_CLIENT_ID", default="")
     GOOGLE_CLIENT_SECRET: str = Field(env="GOOGLE_CLIENT_SECRET", default="")
     GOOGLE_CLIENT_KEY: str = Field(env="GOOGLE_CLIENT_KEY", default="")
+
+    REDIS_HOST: str = Field(env="REDIS_HOST", default="redis")
+    REDIS_PORT: str = Field(env="REDIS_PORT", default="6379")
+    REDIS_NUM_DB: str = Field(env="REDIS_NUM_DB", default="0")
 
     BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
 
@@ -105,6 +109,25 @@ class DjangoSettings(BaseSettings):
             },
         }
     ]
+
+    # CACHES: Dict[str, Dict[str, Any]] = {
+    #     "default": {
+    #         "BACKEND": "django_redis.cache.RedisCache",
+    #         "LOCATION": "redis://redis_md:6379/0",
+    #         "OPTIONS": {
+    #             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+    #         },
+    #     }
+    # }
+    # SESSION_ENGINE: str = "django.contrib.sessions.backends.cache"
+    # SESSION_CACHE_ALIAS: str = "default"
+    # SESSION_COOKIE_SECURE: bool = True
+    # CSRF_COOKIE_SECURE: bool = True
+    # # Параметры для управления сессиями
+    # SESSION_COOKIE_NAME: str = "sessionid"  # Имя cookie для сессии
+    # SESSION_COOKIE_AGE: int = 36000  # Время жизни сессии в секундах (10 час)
+    # SESSION_EXPIRE_AT_BROWSER_CLOSE: bool = False  # Сессия сохраняется даже после закрытия браузера
+    # SESSION_SAVE_EVERY_REQUEST: bool = True  # Сохранять сессии при каждом запросе
 
     LANGUAGE_CODE: str = "ru-ru"
 

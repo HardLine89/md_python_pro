@@ -127,3 +127,19 @@ function getCsrfToken() {
     let tokenElement = document.querySelector("[name=csrfmiddlewaretoken]");
     return tokenElement ? tokenElement.value : "";
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (window.location.hash) {
+        let target = document.querySelector(window.location.hash);
+        if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "center" });
+
+            // Добавляем класс подсветки
+            target.classList.add("highlight");
+
+            // Убираем подсветку через 2 секунды
+            setTimeout(() => target.classList.remove("highlight"), 2000);
+        }
+    }
+});
+
