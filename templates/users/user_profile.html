@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load martortags %}
 {% load strip_links %}
+{% load crispy_forms_tags %}
+{% load socialaccount %}
 {% load i18n %}
 {% block title %}Профиль пользователя - {{ user.username }}{% endblock %}
 {#{% block body %}#}
@@ -17,18 +19,24 @@
     {% if request.user.is_authenticated %}
         <div class="col-md-12 mb-5">
             <div class="card mb-5">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">{{ user.username }}</h5>
+                    <button id="edit-profile-btn" class="btn btn-sm btn-primary">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
                 </div>
                 <div class="card-body d-flex flex-column flex-md-row align-items-center">
                     <!-- Аватар слева -->
-                    <div class="ms-5 me-5 mb-4 mb-md-0">
-                        <img src="{{ user.profile.avatar.url }}" class="rounded-circle" width="200" height="200"
+                    <div class="ms-5 me-5 mb-4 mb-md-0 text-center">
+                        <img id="profile-avatar" src="{{ user.profile.avatar.url }}" class="rounded-circle" width="200"
+                             height="200"
                              alt="{{ user.username }}">
+                        <input type="file" id="avatar-input" class="form-control mt-2 d-none">
                     </div>
-                    <!-- Информация справа (центрируем по высоте и по ширине) -->
-                    <div class="d-flex flex-column align-items-center justify-content-center flex-grow-1 text-center me-5">
-                        <table class="table ms-md-0 ms-5"
+                    <!-- Информация -->
+                    <div class="d-flex flex-column justify-content-center flex-grow-1 text-center me-5">
+                        <!-- Обычный режим (таблица) -->
+                        <table id="profile-info" class="table ms-md-0 ms-5"
                                style="border-top: none; background-color: transparent;">
                             <tbody>
                             <tr>
@@ -58,9 +66,30 @@
                             </tr>
                             </tbody>
                         </table>
+                        <!-- Форма редактирования (по умолчанию скрыта) -->
+                        <form id="profile-edit-form" class="d-none" method="post" enctype="multipart/form-data"
+                              action="{% url 'users:edit_profile' %}" class="form-outline" style="text-align: left;">
+                            {% csrf_token %}
+
+                            <div class="mb-4 form-control-outline">
+                                <label for="about" class="form-label"><i class="fa-solid fa-address-card"></i> О
+                                    себе:</label>
+                                <textarea id="about" name="about"
+                                          class="form-control">{{ user.profile.about }}</textarea>
+                            </div>
+
+
+                            <div class="mb-4 form-control-outline">
+                                <label for="avatar" class="form-label"><i class="fa-solid fa-image"></i> Аватар:</label>
+                                <input type="file" id="avatar" name="avatar" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-success">Сохранить</button>
+                            <button type="button" id="cancel-edit-btn" class="btn btn-secondary">Отмена</button>
+                        </form>
                     </div>
                 </div>
             </div>
+
             {% if user.article_set.all|length > 0 %}
                 <div class="card mb-5">
                     <div class="card-header">
@@ -139,7 +168,7 @@
                                     <!-- Текст комментария -->
                                     <div class="flex-grow-1">
                                         <!-- Ссылка на статью -->
-                                            <a href="{{ comment.content_object.get_absolute_url }}#comment-{{ comment.id }}"
+                                        <a href="{{ comment.content_object.get_absolute_url }}#comment-{{ comment.id }}"
                                            class="text-decoration-none text-reset text-muted">
                                             {{ comment.content_object.title }}
                                         </a>

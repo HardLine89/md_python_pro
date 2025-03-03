@@ -19,3 +19,11 @@
 .comment {
     scroll-margin-top: 80px; /* Отступ сверху, равный высоте хедера */
 }
+iframe {
+    border: 0;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    height: 500px;
+}

@@ -189,7 +189,15 @@ class DjangoSettings(BaseSettings):
         "martor.extensions.mention",  # to parse markdown mention
         "martor.extensions.emoji",  # to parse markdown emoji
         "martor.extensions.escape_html",  # to handle the XSS vulnerabilities
-        "martor.extensions.mdx_add_id",  # to parse id like {#this_is_id}
+        "martor.extensions.mdx_add_id", # to parse id like {#this_is_id}
+        "martor.extensions.mdx_video",
+    ]
+    ALLOWED_HTML_TAGS: List[str] = [
+        "a", "abbr", "b", "blockquote", "br", "cite", "code", "command",
+        "dd", "del", "div", "dl", "dt", "em", "fieldset", "h1", "h2", "h3", "h4", "h5", "h6",
+        "hr", "i", "iframe", "img", "input", "ins", "kbd", "label", "legend",
+        "li", "ol", "optgroup", "option", "p", "pre", "small", "span", "strong",
+        "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "u", "ul"
     ]
 
     MARTOR_TOOLBAR_BUTTONS: List[str] = [
@@ -208,6 +216,7 @@ class DjangoSettings(BaseSettings):
         "direct-mention",
         "toggle-maximize",
         "help",
+        "embed",
     ]
 
     MARTOR_ENABLE_CONFIGS: Dict[str, str] = {
@@ -227,6 +236,8 @@ class DjangoSettings(BaseSettings):
     MARTOR_UPLOAD_URL: str = "/media/articles/content"
 
     TAGGIT_CASE_INSENSITIVE: bool = True
+
+    MARTOR_MARKDOWN_SAFE_MODE: bool = False
 
     JAZZMIN_SETTINGS: dict = {
         "site_title": "Python DM Pro",
