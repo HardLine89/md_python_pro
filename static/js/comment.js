@@ -122,6 +122,51 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 });
 
+document.querySelectorAll('.like-btn, .dislike-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const commentId = this.getAttribute('data-comment-id');
+        const isLike = this.classList.contains('like-btn');
+        const action = isLike ? 'like' : 'dislike';
+
+        fetch(`/vote-comment/${commentId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ action: action })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            if (data.success) {
+                const likeBtn = document.querySelector(`.like-btn[data-comment-id="${commentId}"]`);
+                const dislikeBtn = document.querySelector(`.dislike-btn[data-comment-id="${commentId}"]`);
+
+                // Обновляем счетчики
+                likeBtn.querySelector('.count').textContent = data.likes;
+                dislikeBtn.querySelector('.count').textContent = data.dislikes;
+
+                // Сбрасываем классы активного состояния
+                likeBtn.classList.remove('active');
+                dislikeBtn.classList.remove('active');
+
+                // Обновляем активный класс
+                if (data.user_vote === 1) {
+                    likeBtn.classList.add('active');
+                } else if (data.user_vote === -1) {
+                    dislikeBtn.classList.add('active');
+                }
+            }
+        });
+    });
+});
+
+
 // Функция для получения CSRF-токена
 function getCsrfToken() {
     let tokenElement = document.querySelector("[name=csrfmiddlewaretoken]");

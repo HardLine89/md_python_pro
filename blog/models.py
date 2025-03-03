@@ -88,9 +88,9 @@ class Article(DateMixin, SlugifyMixin, models.Model):
         default="articles/default.png",
     )
     views = models.PositiveIntegerField(verbose_name="Просмотры", default=0)
-    comments = GenericRelation(
-        Comment, verbose_name="Комментарии", related_query_name="articles"
-    )
+    # comments = GenericRelation(
+    #     Comment, verbose_name="Комментарии", related_query_name="articles"
+    # )
     votes = GenericRelation(
         LikeDislike, verbose_name="Оценки", related_query_name="articles"
     )
@@ -99,7 +99,7 @@ class Article(DateMixin, SlugifyMixin, models.Model):
         return reverse("blog:article_detail", kwargs={"slug": self.slug})
 
     def get_comments(self):
-        return self.comments.filter(parent__isnull=True)
+        return self.comment_set.filter(parent__isnull=True).order_by("created_at")
 
     def __str__(self):
         return f"{self.title} - {self.category}"

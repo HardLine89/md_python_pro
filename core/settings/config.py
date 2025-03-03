@@ -235,7 +235,7 @@ class DjangoSettings(BaseSettings):
 
     MARTOR_UPLOAD_URL: str = "/media/articles/content"
 
-    TAGGIT_CASE_INSENSITIVE: bool = True
+    TAGGIT_CASE_INSENSITIVE: bool = False
 
     MARTOR_MARKDOWN_SAFE_MODE: bool = False
 

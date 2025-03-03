@@ -12,7 +12,6 @@ from blog.models import Article, Category
 from utils.view_mixins import CommonContextMixin
 
 
-
 class SearchListView(CommonContextMixin, ListView):
     model = Article
     template_name = "blog/index.html"
@@ -63,7 +62,6 @@ class SearchListView(CommonContextMixin, ListView):
         return context
 
 
-
 class ArticleListView(CommonContextMixin, ListView):
     model = Article
     template_name = "blog/index.html"
@@ -108,7 +106,6 @@ class ArticleListView(CommonContextMixin, ListView):
         return context
 
 
-
 class ArticleDetailView(CommonContextMixin, DetailView):
     model = Article
     template_name = "blog/article_detail.html"
@@ -128,6 +125,7 @@ class ArticleDetailView(CommonContextMixin, DetailView):
         if self.request.user.is_authenticated:
             user_vote = article.votes.user_vote(self.request.user, article)
         context["user_vote"] = user_vote
+        context["comments"] = article.get_comments()
         context["recent_articles"] = (
             Article.objects.filter(
                 Q(category=article.category)  # Статьи из той же категории
@@ -143,7 +141,6 @@ class ArticleDetailView(CommonContextMixin, DetailView):
             ]  # Сортируем по количеству общих тегов и дате
         )
         return context
-
 
 
 class ArticleByCategoryView(CommonContextMixin, ListView):
@@ -194,7 +191,6 @@ class ArticleByCategoryView(CommonContextMixin, ListView):
         )
         context["current_category"] = self.category.slug
         return context
-
 
 
 class ArticleByTagView(CommonContextMixin, ListView):

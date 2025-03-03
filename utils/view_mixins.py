@@ -14,7 +14,7 @@ class CommonContextMixin:
 
         return {
             "categories": Category.objects.all(),
-            "comments": Comment.objects.filter(parent=None).order_by("-created_at")[:3],
+            "latest_comments": Comment.objects.filter(parent=None).order_by("-created_at")[:3],
             "popular_week": None,
             "recent_articles": None,
             "popular_tags": Tag.objects.annotate(

@@ -137,7 +137,7 @@
         </div>
         <div class="card-body p-1">
             <ul class="list-group list-group-flush">
-                {% for comment in comments %}
+                {% for comment in latest_comments %}
                     <li class="list-group-item border-bottom p-3"> <!-- Добавляем отступы и границу -->
                         <div class="d-flex align-items-start"> <!-- Используем flex для выравнивания -->
                             <!-- Аватарка -->
@@ -149,9 +149,9 @@
                             <div class="flex-grow-1">
                                 <!-- Ссылка на статью -->
                                 <small class="text-muted">
-                                    <a href="{{ comment.content_object.get_absolute_url }}#comment-{{ comment.id }}"
+                                    <a href="{{ comment.article.get_absolute_url }}#comment-{{ comment.id }}"
                                        class="text-decoration-none text-reset">
-                                        {{ comment.content_object.title|truncatewords:5 }}
+                                        {{ comment.article.title|truncatewords:5 }}
                                     </a>
                                 </small>
 

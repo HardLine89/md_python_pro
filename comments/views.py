@@ -32,7 +32,7 @@ def add_comment(request, article_id):
 
         # Создание нового комментария
         comment = Comment.objects.create(
-            author=request.user, text=text, content_object=article
+            author=request.user, text=text, article=article
         )
 
         # Если комментарий является ответом на другой комментарий, устанавливаем родителя
@@ -89,7 +89,7 @@ def get_notifications(request):
         {
             "id": n.id,
             "text": f"{n.sender.username} ответил на ваш комментарий",
-            "url": f"/articles/{n.comment.content_object.slug}#comment-{n.comment.id}",
+            "url": f"/articles/{n.comment.article.slug}#comment-{n.comment.id}",
         }
         for n in notifications
     ]

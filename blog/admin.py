@@ -26,7 +26,7 @@ class ArticleAdmin(admin.ModelAdmin):
         "updated_at",
         "views",
         "votes_info",
-        "comments_info",
+        # "comments_info",
     )
     list_filter = ("category", "author")
     search_fields = ("title", "content")
@@ -38,9 +38,9 @@ class ArticleAdmin(admin.ModelAdmin):
         "updated_at",
         "views",
         "votes_info",
-        "comments_info",
+        # "comments_info",
     )
-    inlines = [CommentInline]
+    # inlines = [CommentInline]
     fieldsets = [
         (None, {"fields": ["title", "slug", "category", "content", "tags", "author", "cover"]}),
         (
@@ -49,30 +49,30 @@ class ArticleAdmin(admin.ModelAdmin):
                 "fields": [
                     "votes_info",
                     "views",
-                    "comments_info",
+                    # "comments_info",
                 ]
             },
         ),
         ("Даты", {"fields": ["created_at", "updated_at"]}),
     ]
 
-    def comments_info(self, obj):
-        """
-        Возвращает количество комментариев для статьи.
-        """
-        comments_count = obj.comments.count()
+    # def comments_info(self, obj):
+    #     """
+    #     Возвращает количество комментариев для статьи.
+    #     """
+    #     comments_count = obj.comments.count()
+    #
+    #     # Получаем content_type для модели obj
+    #     content_type = ContentType.objects.get_for_model(obj)
+    #
+    #     return format_html(
+    #         '<a href="/admin/comments/comment/?content_type__id__exact={}&object_id={}">Комментарии: {}</a>',
+    #         content_type.id,  # Используем ID вместо model name
+    #         obj.id,
+    #         comments_count,
+    #     )
 
-        # Получаем content_type для модели obj
-        content_type = ContentType.objects.get_for_model(obj)
-
-        return format_html(
-            '<a href="/admin/comments/comment/?content_type__id__exact={}&object_id={}">Комментарии: {}</a>',
-            content_type.id,  # Используем ID вместо model name
-            obj.id,
-            comments_count,
-        )
-
-    comments_info.short_description = "Комментарии"
+    # comments_info.short_description = "Комментарии"
 
     def votes_info(self, obj):
         """

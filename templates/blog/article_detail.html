@@ -43,8 +43,8 @@
 
                         {% for tag in article.tags.all %}
                             <span class="badge bg-primary"><a
-                            href="{% url 'blog:tag_articles' tag=tag %}"
-                            class="text-decoration-none text-reset">#{{ tag.name }}</a></span>
+                                    href="{% url 'blog:tag_articles' tag=tag %}"
+                                    class="text-decoration-none text-reset">#{{ tag.name }}</a></span>
                         {% endfor %}
                     </div>
                 </div>
@@ -97,7 +97,7 @@
 
                 <!-- Комментарии -->
                 <div id="comments">
-                    {% for comment in article.get_comments %}
+                    {% for comment in comments %}
                         <div class="d-flex align-items-start mb-4 comment" id="comment-{{ comment.id }}">
                             <div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
                                 <img src="{{ comment.author.profile.avatar.url }}" class="img-fluid"
@@ -106,17 +106,25 @@
                             <div class="ms-3 flex-grow-1">
                                 <div class="d-flex align-items-center mb-1">
                                     <span class="badge {% if comment.author.is_staff %}badge-success{% else %}badge-secondary{% endif %} fw-bold mb-0 me-2"><a
-                            href="{% url 'users:profile_by_id' comment.author.id %}"
-                            class="text-decoration-none text-reset">{{ comment.author }}</a></span>
+                                            href="{% url 'users:profile_by_id' comment.author.id %}"
+                                            class="text-decoration-none text-reset">{{ comment.author }}</a></span>
                                     <p class="text-muted mb-0" style="font-size: 0.85rem;">
                                         <i class="fa-solid fa-calendar"></i> {{ comment.created_at|date:"d M Y H:i" }}
                                     </p>
                                 </div>
                                 <p class="mb-0">{{ comment.text }}</p>
-                                <button class="btn btn-sm btn-link text-muted mb-3"
+                                <button class="btn btn-sm btn-link text-muted"
                                         data-comment-id="{{ comment.id }}"
                                         onclick="showReplyForm({{ comment.id }})">Ответить
                                 </button>
+                                <button class="like-btn btn btn-sm btn-link text-muted"
+                                        data-comment-id="{{ comment.id }}"><i
+                                        class="fa-solid fa-thumbs-up"></i> <span
+                                        class="count">{{ comment.likes_count }}</span></button>
+                                <button class="dislike-btn btn btn-sm btn-link text-muted"
+                                        data-comment-id="{{ comment.id }}">
+                                    <i class="fa-solid fa-thumbs-down"></i> <span
+                                        class="count">{{ comment.dislikes_count }}</button>
 
 
                                 <!-- Форма ответа (скрытая) -->
@@ -128,11 +136,15 @@
                                             onclick="submitReply(this)">Отправить
                                     </button>
                                 </div>
+                            {% if comment.comment_set.all %}
+                            <hr>
+                            {% endif %}
 
                                 <!-- Здесь будут появляться ответы -->
                                 <div id="replies-{{ comment.id }}" class="ms-5">
-                                    {% for reply in comment.children.all %}
-                                        <div class="d-flex align-items-start mb-2 mt-2 comment" id="comment-{{ reply.id }}">
+                                    {% for reply in comment.comment_set.all %}
+                                        <div class="d-flex align-items-start mb-2 mt-2 comment"
+                                             id="comment-{{ reply.id }}">
                                             <div class="rounded-circle overflow-hidden"
                                                  style="width: 40px; height: 40px;">
                                                 <img src="{{ reply.author.profile.avatar.url }}" class="img-fluid"
@@ -141,17 +153,26 @@
                                             <div class="ms-3 flex-grow-1">
                                                 <div class="d-flex align-items-center mb-1">
                                                     <span class="badge {% if reply.author.is_staff %}badge-success{% else %}badge-secondary{% endif %} fw-bold mb-0 me-2"><a
-                            href="{% url 'users:profile_by_id' reply.author.id %}"
-                            class="text-decoration-none text-reset">{{ reply.author }}</a></span>
+                                                            href="{% url 'users:profile_by_id' reply.author.id %}"
+                                                            class="text-decoration-none text-reset">{{ reply.author }}</a></span>
                                                     <p class="text-muted mb-0" style="font-size: 0.85rem;">
                                                         <i class="fa-solid fa-calendar"></i> {{ reply.created_at|date:"d M Y H:i" }}
                                                     </p>
                                                 </div>
                                                 <p class="mb-0">{{ reply.text }}</p>
                                                 <button class="btn btn-sm btn-link text-muted"
-                                                        data-comment-id="{{ comment.id }}"
+                                                        data-comment-id="{{ reply.id }}"
                                                         onclick="showReplyForm({{ comment.id }})">Ответить
                                                 </button>
+                                                <button class="like-btn btn btn-sm btn-link text-muted"
+                                                        data-comment-id="{{ reply.id }}"><i
+                                                        class="fa-solid fa-thumbs-up"></i> <span
+                                                        class="count">{{ reply.likes_count }}</span></button>
+                                                <button class="dislike-btn btn btn-sm btn-link text-muted"
+                                                        data-comment-id="{{ reply.id }}">
+                                                    <i class="fa-solid fa-thumbs-down"></i> <span
+                                                        class="count">{{ reply.dislikes_count }}</button>
+
                                                 <div id="reply-form-{{ reply.id }}" class="d-none">
                                                     <textarea id="reply-text-{{ reply.id }}" class="form-control mt-2"
                                                               placeholder="Ответить..."></textarea>
@@ -164,6 +185,7 @@
 
                                             </div>
                                         </div>
+                                        <div id="replies-{{ reply.id }}" class="ms-5"></div>
                                     {% endfor %}
                                 </div>
                             </div>

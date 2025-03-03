@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-
+from ratings.models import LikeDislike
 from utils.mixins import DateMixin
 
 
@@ -12,26 +12,44 @@ class Comment(DateMixin, models.Model):
     text = models.TextField(
         max_length=300, blank=True, verbose_name="Текст комментария"
     )
-    content_type = models.ForeignKey(
-        ContentType, on_delete=models.CASCADE, verbose_name="Тип контента"
+    article = models.ForeignKey(
+        "blog.Article",
+        on_delete=models.CASCADE,
+        verbose_name="Статья",
     )
-    object_id = models.UUIDField(verbose_name="UUID объекта")
-    content_object = GenericForeignKey()
     parent = models.ForeignKey(
         "self",
-        related_name="children",
         blank=True,
         null=True,
         db_index=True,
         on_delete=models.CASCADE,
         verbose_name="Родитель",
     )
+    votes = GenericRelation(
+        LikeDislike, verbose_name="Оценки", related_query_name="articles"
+    )
 
     def __str__(self):
-        return f"{self.author} - {self.content_type} - {self.content_object}"
+        return f"{self.author} - {self.article} - {self.text}"
+
+    def likes_count(self):
+        content_type = ContentType.objects.get_for_model(Comment)
+        return (
+            LikeDislike.objects.likes()
+            .filter(content_type=content_type, object_id=self.id)
+            .count()
+        )
+
+    def dislikes_count(self):
+        content_type = ContentType.objects.get_for_model(Comment)
+        return (
+            LikeDislike.objects.dislikes()
+            .filter(content_type=content_type, object_id=self.id)
+            .count()
+        )
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ["created_at"]
         verbose_name = "Коммент"
         verbose_name_plural = "Комменты"
 

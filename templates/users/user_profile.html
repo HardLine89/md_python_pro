@@ -163,16 +163,16 @@
                                 <div class="d-flex align-items-start"> <!-- Используем flex для выравнивания -->
                                     <!-- Аватарка -->
                                     <a href="{{ comment.content_object.get_absolute_url }}#comment-{{ comment.id }}">
-                                        <img src="{{ comment.content_object.cover.url }}"
+                                        <img src="{{ comment.article.cover.url }}"
                                              alt="{{ comment.author.username }}"
                                              class="me-3" style="width: 120px; height: 70px;">
                                     </a>
                                     <!-- Текст комментария -->
                                     <div class="flex-grow-1">
                                         <!-- Ссылка на статью -->
-                                        <a href="{{ comment.content_object.get_absolute_url }}#comment-{{ comment.id }}"
+                                        <a href="{{ comment.article.get_absolute_url }}#comment-{{ comment.id }}"
                                            class="text-decoration-none text-reset text-muted">
-                                            {{ comment.content_object.title }}
+                                            {{ comment.article.title }}
                                         </a>
                                         <!-- Имя автора, дата и кол-во ответов -->
                                         <div class="d-flex justify-content-between">
