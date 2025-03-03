@@ -42,7 +42,9 @@
                     <div class="text-end">
 
                         {% for tag in article.tags.all %}
-                            <span class="badge bg-primary">#{{ tag.name }}</span>
+                            <span class="badge bg-primary"><a
+                            href="{% url 'blog:tag_articles' tag=tag %}"
+                            class="text-decoration-none text-reset">#{{ tag.name }}</a></span>
                         {% endfor %}
                     </div>
                 </div>
@@ -103,7 +105,9 @@
                             </div>
                             <div class="ms-3 flex-grow-1">
                                 <div class="d-flex align-items-center mb-1">
-                                    <span class="badge {% if comment.author.is_staff %}badge-success{% else %}badge-secondary{% endif %} fw-bold mb-0 me-2">{{ comment.author }}</span>
+                                    <span class="badge {% if comment.author.is_staff %}badge-success{% else %}badge-secondary{% endif %} fw-bold mb-0 me-2"><a
+                            href="{% url 'users:profile_by_id' comment.author.id %}"
+                            class="text-decoration-none text-reset">{{ comment.author }}</a></span>
                                     <p class="text-muted mb-0" style="font-size: 0.85rem;">
                                         <i class="fa-solid fa-calendar"></i> {{ comment.created_at|date:"d M Y H:i" }}
                                     </p>
@@ -136,7 +140,9 @@
                                             </div>
                                             <div class="ms-3 flex-grow-1">
                                                 <div class="d-flex align-items-center mb-1">
-                                                    <span class="badge {% if reply.author.is_staff %}badge-success{% else %}badge-secondary{% endif %} fw-bold mb-0 me-2">{{ reply.author }}</span>
+                                                    <span class="badge {% if reply.author.is_staff %}badge-success{% else %}badge-secondary{% endif %} fw-bold mb-0 me-2"><a
+                            href="{% url 'users:profile_by_id' reply.author.id %}"
+                            class="text-decoration-none text-reset">{{ reply.author }}</a></span>
                                                     <p class="text-muted mb-0" style="font-size: 0.85rem;">
                                                         <i class="fa-solid fa-calendar"></i> {{ reply.created_at|date:"d M Y H:i" }}
                                                     </p>
