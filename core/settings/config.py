@@ -185,16 +185,15 @@ class DjangoSettings(BaseSettings):
             },
         }
 
-
     TAGGIT_CASE_INSENSITIVE: bool = False
 
     MARTOR_MARKDOWN_SAFE_MODE: bool = False
 
     MDEDITOR_CONFIGS: dict = {
-        'default': {
-            'width': '100% ',  # Custom edit box width
-            'height': 1000,  # Custom edit box height
-            'toolbar': ["undo", "redo", "|",
+        "default": {
+            "width": "100% ",  # Custom edit box width
+            "height": 1000,  # Custom edit box height
+            "toolbar": ["undo", "redo", "|",
                         "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
                         "h1", "h2", "h3", "h5", "h6", "|",
                         "list-ul", "list-ol", "hr", "|",
@@ -203,23 +202,29 @@ class DjangoSettings(BaseSettings):
                         "emoji", "html-entities", "pagebreak", "goto-line", "|",
                         "help", "info",
                         "||", "preview", "watch", "fullscreen"],  # custom edit box toolbar
-            'upload_image_formats': ["jpg", "jpeg", "gif", "png", "bmp", "webp"],  # image upload format type
-            'image_folder': '/media/articles/content',  # image save the folder name
-            'theme': 'dark',  # edit box theme, dark / default
-            'preview_theme': 'dark',  # Preview area theme, dark / default
-            'editor_theme': 'dark',  # edit area theme, pastel-on-dark / default
-            'toolbar_autofixed': True,  # Whether the toolbar capitals
-            'search_replace': True,  # Whether to open the search for replacement
-            'emoji': True,  # whether to open the expression function
-            'tex': True,  # whether to open the tex chart function
-            'flow_chart': True,  # whether to open the flow chart function
-            'sequence': True,  # Whether to open the sequence diagram function
-            'watch': True,  # Live preview
-            'lineWrapping': False,  # lineWrapping
-            'lineNumbers': False,  # lineNumbers
-            'language': 'en'  # zh / en / es
+            "upload_image_formats": [
+                "jpg",
+                "jpeg",
+                "gif",
+                "png",
+                "bmp",
+                "webp",
+            ],  # image upload format type
+            "image_folder": "/media/articles/content",  # image save the folder name
+            "theme": "dark",  # edit box theme, dark / default
+            "preview_theme": "dark",  # Preview area theme, dark / default
+            "editor_theme": "dark",  # edit area theme, pastel-on-dark / default
+            "toolbar_autofixed": True,  # Whether the toolbar capitals
+            "search_replace": True,  # Whether to open the search for replacement
+            "emoji": True,  # whether to open the expression function
+            "tex": True,  # whether to open the tex chart function
+            "flow_chart": True,  # whether to open the flow chart function
+            "sequence": True,  # Whether to open the sequence diagram function
+            "watch": True,  # Live preview
+            "lineWrapping": False,  # lineWrapping
+            "lineNumbers": False,  # lineNumbers
+            "language": "en",  # zh / en / es
         }
-
     }
 
     UNFOLD: dict = {
@@ -278,7 +283,6 @@ class DjangoSettings(BaseSettings):
                             "title": _("Статьи"),
                             "icon": "article",  # Supported icon set: https://fonts.google.com/icons
                             "link": reverse_lazy("admin:blog_article_changelist"),
-
                             # "permission": lambda request: request.user.is_superuser,
                         },
                         {
@@ -311,7 +315,9 @@ class DjangoSettings(BaseSettings):
                         {
                             "title": _("Оценки"),
                             "icon": "star",
-                            "link": reverse_lazy("admin:ratings_likedislike_changelist"),
+                            "link": reverse_lazy(
+                                "admin:ratings_likedislike_changelist"
+                            ),
                         },
                     ],
                 },
@@ -338,22 +344,30 @@ class DjangoSettings(BaseSettings):
                         {
                             "title": _("Аккаунты"),
                             "icon": "manage_accounts",
-                            "link": reverse_lazy("admin:account_emailaddress_changelist"),
+                            "link": reverse_lazy(
+                                "admin:account_emailaddress_changelist"
+                            ),
                         },
                         {
                             "title": _("Аккаунты в социальных сетях"),
                             "icon": "share",
-                            "link": reverse_lazy("admin:socialaccount_socialaccount_changelist"),
+                            "link": reverse_lazy(
+                                "admin:socialaccount_socialaccount_changelist"
+                            ),
                         },
                         {
                             "title": _("Социальные приложения"),
                             "icon": "login",
-                            "link": reverse_lazy("admin:socialaccount_socialaccount_changelist"),
+                            "link": reverse_lazy(
+                                "admin:socialaccount_socialaccount_changelist"
+                            ),
                         },
                         {
                             "title": _("Токены социальных приложений"),
                             "icon": "token",
-                            "link": reverse_lazy("admin:socialaccount_socialtoken_changelist"),
+                            "link": reverse_lazy(
+                                "admin:socialaccount_socialtoken_changelist"
+                            ),
                         },
                     ],
                 },
