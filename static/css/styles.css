@@ -1,6 +1,9 @@
 .hljs {
     border: none !important;
 }
+.hljs-ln-n {
+    margin-right: 10px;
+}
 
 #btn-back-to-top {
   position: fixed;

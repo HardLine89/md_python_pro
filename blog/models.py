@@ -19,7 +19,6 @@ class UUIDTaggedItem(GenericUUIDTaggedItemBase, TaggedItemBase):
     class Meta:
         verbose_name = "Тег"
         verbose_name_plural = "Теги"
-        ordering = ["-name"]
 
 
 class Category(DateMixin, SlugifyMixin, models.Model):
@@ -77,7 +76,7 @@ class Article(DateMixin, SlugifyMixin, models.Model):
         related_name="articles",
     )
     content = MDTextField(verbose_name="Содержание", blank=False)
-    tags = TaggableManager(verbose_name="Теги", through=UUIDTaggedItem, ordering="name")
+    tags = TaggableManager(verbose_name="Теги", through=UUIDTaggedItem)
     cover = models.ImageField(
         verbose_name="Обложка",
         upload_to=article_cover_path,

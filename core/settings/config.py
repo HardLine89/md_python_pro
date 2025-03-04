@@ -135,7 +135,7 @@ class DjangoSettings(BaseSettings):
     # CSRF_COOKIE_SECURE: bool = True
     # # Параметры для управления сессиями
     # SESSION_COOKIE_NAME: str = "sessionid"  # Имя cookie для сессии
-    # SESSION_COOKIE_AGE: int = 36000  # Время жизни сессии в секундах (10 час)
+    SESSION_COOKIE_AGE: int = 60 * 60 * 24 * 7  # Время жизни сессии в секундах (7days)
     # SESSION_EXPIRE_AT_BROWSER_CLOSE: bool = False  # Сессия сохраняется даже после закрытия браузера
     # SESSION_SAVE_EVERY_REQUEST: bool = True  # Сохранять сессии при каждом запросе
 
@@ -233,7 +233,7 @@ class DjangoSettings(BaseSettings):
         "SITE_SUBHEADER": "python",
         "SITE_DROPDOWN": [
             {
-                "icon": "diamond",
+                "icon": "code",
                 "title": _("MDPython.pro"),
                 "link": "https://mdpython.pro",
             },
@@ -250,7 +250,7 @@ class DjangoSettings(BaseSettings):
             "light": lambda request: static("logo.png"),  # light mode
             "dark": lambda request: static("logo.png"),  # dark mode
         },
-        "SITE_SYMBOL": "speed",  # symbol from icon set
+        "SITE_SYMBOL": "code",  # symbol from icon set
         "SITE_FAVICONS": [
             {
                 "rel": "icon",
@@ -275,6 +275,17 @@ class DjangoSettings(BaseSettings):
             "show_all_applications": False,  # Dropdown with all applications and models
             "navigation": [
                 {
+                    "title": _("Управление сайтом"),
+                    "separator": False,
+                    "items": [
+                        {
+                            "title": _("Главная"),
+                            "icon": "home",
+                            "link": reverse_lazy("admin:index"),
+                        },
+                    ],
+                },
+                {
                     "title": _("Блог"),
                     "separator": True,  # Top border
                     "collapsible": True,  # Collapsible group of links
@@ -294,11 +305,6 @@ class DjangoSettings(BaseSettings):
                             "title": _("Теги"),
                             "icon": "bookmark",
                             "link": reverse_lazy("admin:taggit_tag_changelist"),
-                        },
-                        {
-                            "title": _("Users"),
-                            "icon": "people",
-                            "link": reverse_lazy("admin:auth_user_changelist"),
                         },
                     ],
                 },
