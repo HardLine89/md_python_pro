@@ -1,18 +1,32 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
+from django.contrib.auth.models import User, Group
 
+from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
+from unfold.admin import ModelAdmin
+from unfold.admin import StackedInline
 from users.models import Profile
 
 
-class ProfileInline(admin.StackedInline):
+class ProfileInline(StackedInline):
     model = Profile
     can_delete = False
     verbose_name_plural = "Профиль"
     fk_name = "user"
 
 
-class CustomUserAdmin(UserAdmin):
+# Отменяем стандартную регистрацию модели User
+admin.site.unregister(User)
+
+
+@admin.register(User)
+class UserAdmin(BaseUserAdmin, ModelAdmin):
+    # Forms loaded from `unfold.forms`
+    form = UserChangeForm
+    add_form = UserCreationForm
+    change_password_form = AdminPasswordChangeForm
     inlines = (ProfileInline,)
 
     def get_inline_instances(self, request, obj=None):
@@ -21,15 +35,16 @@ class CustomUserAdmin(UserAdmin):
         return super().get_inline_instances(request, obj)
 
 
-# Отменяем стандартную регистрацию модели User
-admin.site.unregister(User)
+admin.site.unregister(Group)
 
-# Регистрируем модель User с кастомным UserAdmin
-admin.site.register(User, CustomUserAdmin)
+
+@admin.register(Group)
+class GroupAdmin(BaseGroupAdmin, ModelAdmin):
+    pass
 
 
 @admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
+class ProfileAdmin(ModelAdmin):
     list_display = ("user", "avatar", "about")
     list_display_links = ("user",)
     list_filter = ("user",)

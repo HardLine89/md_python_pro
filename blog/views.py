@@ -5,6 +5,7 @@ from django.db.models import Sum, Count, Q, F
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import ListView, DetailView
 from faker import Faker
 from taggit.models import Tag

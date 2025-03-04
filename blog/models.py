@@ -1,14 +1,11 @@
 import uuid
-
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.urls import reverse
-from martor.models import MartorField
+from mdeditor.fields import MDTextField
 from taggit.managers import TaggableManager
 from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
-
-from comments.models import Comment
 from ratings.models import LikeDislike
 from utils.mixins import DateMixin, SlugifyMixin
 from utils.path_helpers import article_cover_path
@@ -22,6 +19,7 @@ class UUIDTaggedItem(GenericUUIDTaggedItemBase, TaggedItemBase):
     class Meta:
         verbose_name = "Тег"
         verbose_name_plural = "Теги"
+        ordering = ["-name"]
 
 
 class Category(DateMixin, SlugifyMixin, models.Model):
@@ -78,8 +76,8 @@ class Article(DateMixin, SlugifyMixin, models.Model):
         on_delete=models.CASCADE,
         related_name="articles",
     )
-    content = MartorField(verbose_name="Содержание", blank=False)
-    tags = TaggableManager(verbose_name="Теги", through=UUIDTaggedItem)
+    content = MDTextField(verbose_name="Содержание", blank=False)
+    tags = TaggableManager(verbose_name="Теги", through=UUIDTaggedItem, ordering="name")
     cover = models.ImageField(
         verbose_name="Обложка",
         upload_to=article_cover_path,

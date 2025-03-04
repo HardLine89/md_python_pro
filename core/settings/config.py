@@ -1,5 +1,9 @@
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict
+
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+from django.templatetags.static import static
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings
 
@@ -40,9 +44,9 @@ class DjangoSettings(BaseSettings):
         }
 
     INSTALLED_APPS: List[str] = [
-        "jazzmin",
         "taggit",
         "martor",
+        "mdeditor",
         "django_htmx",
         "crispy_forms",
         "crispy_bootstrap4",
@@ -50,6 +54,12 @@ class DjangoSettings(BaseSettings):
         "allauth.account",
         "allauth.socialaccount",
         "allauth.socialaccount.providers.google",
+        "unfold",
+        "unfold.contrib.filters",
+        "unfold.contrib.forms",
+        "unfold.contrib.import_export",
+        "unfold.contrib.guardian",
+        "unfold.contrib.simple_history",
         "django.contrib.admin",
         "django.contrib.auth",
         "django.contrib.contenttypes",
@@ -175,136 +185,180 @@ class DjangoSettings(BaseSettings):
             },
         }
 
-    MARTOR_THEME: str = "bootstrap"
-
-    # Markdown extensions (default)
-    MARTOR_MARKDOWN_EXTENSIONS: List[str] = [
-        "markdown.extensions.extra",
-        "markdown.extensions.nl2br",
-        "markdown.extensions.smarty",
-        "markdown.extensions.fenced_code",
-        "markdown.extensions.sane_lists",
-        # Custom markdown extensions.
-        "martor.extensions.urlize",
-        "martor.extensions.mention",  # to parse markdown mention
-        "martor.extensions.emoji",  # to parse markdown emoji
-        "martor.extensions.escape_html",  # to handle the XSS vulnerabilities
-        "martor.extensions.mdx_add_id", # to parse id like {#this_is_id}
-        "martor.extensions.mdx_video",
-    ]
-    ALLOWED_HTML_TAGS: List[str] = [
-        "a", "abbr", "b", "blockquote", "br", "cite", "code", "command",
-        "dd", "del", "div", "dl", "dt", "em", "fieldset", "h1", "h2", "h3", "h4", "h5", "h6",
-        "hr", "i", "iframe", "img", "input", "ins", "kbd", "label", "legend",
-        "li", "ol", "optgroup", "option", "p", "pre", "small", "span", "strong",
-        "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "u", "ul"
-    ]
-
-    MARTOR_TOOLBAR_BUTTONS: List[str] = [
-        "bold",
-        "italic",
-        "horizontal",
-        "heading",
-        "pre-code",
-        "blockquote",
-        "unordered-list",
-        "ordered-list",
-        "link",
-        "image-link",
-        "image-upload",
-        "emoji",
-        "direct-mention",
-        "toggle-maximize",
-        "help",
-        "embed",
-    ]
-
-    MARTOR_ENABLE_CONFIGS: Dict[str, str] = {
-        "emoji": "true",  # to enable/disable emoji icons.
-        "imgur": "true",  # to enable/disable imgur/custom uploader.
-        "mention": "false",  # to enable/disable mention
-        "jquery": "true",  # to include/revoke jquery (require for admin default django)
-        "living": "false",  # to enable/disable live updates in preview
-        "spellcheck": "false",  # to enable/disable spellcheck in form textareas
-        "hljs": "true",  # to enable/disable hljs highlighting in preview
-    }
-
-    MARTOR_ENABLE_ADMIN_CSS: bool = False
-
-    MARTOR_ENABLE_LABEL: bool = True
-
-    MARTOR_UPLOAD_URL: str = "/media/articles/content"
 
     TAGGIT_CASE_INSENSITIVE: bool = False
 
     MARTOR_MARKDOWN_SAFE_MODE: bool = False
 
-    JAZZMIN_SETTINGS: dict = {
-        "site_title": "Python DM Pro",
-        "site_header": "Python DM Pro",
-        "site_brand": "Python DM Pro",
-        "show_ui_builder": False,
-        "user_avatar": "users.profile.avatar",
-        "icons": {
-            "auth": "fas fa-users-cog",
-            "auth.user": "fas fa-user",
-            "users.profile": "fas fa-user",
-            "auth.Group": "fas fa-users",
-            "blog": "fas fa-book",
-            "blog.category": "fas fa-folder",
-            "blog.article": "fa-solid fa-newspaper",
-            "ratings.likedislike": "fa-solid fa-thumbs-up",
-            "taggit.tag": "fas fa-tag",
-            "comments.comment": "fa-solid fa-comment",
-            "account.emailaddress": "fa-solid fa-envelope",
-            "socialaccount.socialaccount": "fa-solid fa-user",
-            "socialaccount.socialapp": "fa-solid fa-code",
-            "socialaccount.socialtoken": "fa-solid fa-key",
-        },
-        "order_with_respect_to": [
-            "blog",
-            "blog.category",
-            "blog.article",
-            "comments.comment",
-            "ratings.likedislike",
-            "taggit.tag",
-            "auth",
-            "account.emailaddress",
-            "socialaccount.socialaccount",
-            "socialaccount.socialapp",
-            "socialaccount.socialtoken",
-        ],
-        # Links to put along the top menu
-        "topmenu_links": [
-            # Url that gets reversed (Permissions can be added)
-            {
-                "name": "Главная",
-                "url": "admin:index",
-                "permissions": ["auth.view_user"],
-            },
-            # external url that opens in a new window (Permissions can be added)
-            {
-                "name": "Support",
-                "url": "https://github.com/farridav/django-jazzmin/issues",
-                "new_window": True,
-            },
-            # model admin to link to (Permissions checked against model)
-            {"model": "auth.User"},
-            # App with dropdown menu to all its models pages (Permissions checked against models)
-            {"app": "blog"},
-            {"app": "ratings"},
-            {"app": "comments"},
-        ],
-        "site_logo": "admin_logo.png",
+    MDEDITOR_CONFIGS: dict = {
+        'default': {
+            'width': '100% ',  # Custom edit box width
+            'height': 1000,  # Custom edit box height
+            'toolbar': ["undo", "redo", "|",
+                        "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
+                        "h1", "h2", "h3", "h5", "h6", "|",
+                        "list-ul", "list-ol", "hr", "|",
+                        "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table",
+                        "datetime", "iframe",
+                        "emoji", "html-entities", "pagebreak", "goto-line", "|",
+                        "help", "info",
+                        "||", "preview", "watch", "fullscreen"],  # custom edit box toolbar
+            'upload_image_formats': ["jpg", "jpeg", "gif", "png", "bmp", "webp"],  # image upload format type
+            'image_folder': '/media/articles/content',  # image save the folder name
+            'theme': 'dark',  # edit box theme, dark / default
+            'preview_theme': 'dark',  # Preview area theme, dark / default
+            'editor_theme': 'dark',  # edit area theme, pastel-on-dark / default
+            'toolbar_autofixed': True,  # Whether the toolbar capitals
+            'search_replace': True,  # Whether to open the search for replacement
+            'emoji': True,  # whether to open the expression function
+            'tex': True,  # whether to open the tex chart function
+            'flow_chart': True,  # whether to open the flow chart function
+            'sequence': True,  # Whether to open the sequence diagram function
+            'watch': True,  # Live preview
+            'lineWrapping': False,  # lineWrapping
+            'lineNumbers': False,  # lineNumbers
+            'language': 'en'  # zh / en / es
+        }
+
     }
 
-    JAZZMIN_UI_TWEAKS: dict = {
-        "navbar_small_text": True,
-        "brand_small_text": True,
-        "navbar": "navbar-dark",
-        "sidebar_nav_compact_style": True,
-        "theme": "flatly",
-        # "dark_mode_theme": "darkly",
+    UNFOLD: dict = {
+        "SITE_TITLE": "MDPython.pro",
+        "SITE_HEADER": "Статьи",
+        "SITE_SUBHEADER": "python",
+        "SITE_DROPDOWN": [
+            {
+                "icon": "diamond",
+                "title": _("MDPython.pro"),
+                "link": "https://mdpython.pro",
+            },
+            # ...
+        ],
+        "SITE_URL": "/",
+        # "SITE_ICON": lambda request: static("icon.svg"),  # both modes, optimise for 32px height
+        "SITE_ICON": {
+            "light": lambda request: static("favicon.png"),  # light mode
+            "dark": lambda request: static("favicon.png"),  # dark mode
+        },
+        # "SITE_LOGO": lambda request: static("logo.svg"),  # both modes, optimise for 32px height
+        "SITE_LOGO": {
+            "light": lambda request: static("logo.png"),  # light mode
+            "dark": lambda request: static("logo.png"),  # dark mode
+        },
+        "SITE_SYMBOL": "speed",  # symbol from icon set
+        "SITE_FAVICONS": [
+            {
+                "rel": "icon",
+                "sizes": "32x32",
+                "type": "image/svg+xml",
+                "href": lambda request: static("favicon.png"),
+            },
+        ],
+        "EXTENSIONS": {
+            "modeltranslation": {
+                "flags": {
+                    "en": "🇬🇧",
+                    "ru": "ru",
+                },
+            },
+        },
+        "SHOW_HISTORY": True,  # show/hide "History" button, default: True
+        "SHOW_VIEW_ON_SITE": True,  # show/hide "View on site" button, default: True
+        "SHOW_BACK_BUTTON": False,
+        "SIDEBAR": {
+            "show_search": False,  # Search in applications and models names
+            "show_all_applications": False,  # Dropdown with all applications and models
+            "navigation": [
+                {
+                    "title": _("Блог"),
+                    "separator": True,  # Top border
+                    "collapsible": True,  # Collapsible group of links
+                    "items": [
+                        {
+                            "title": _("Статьи"),
+                            "icon": "article",  # Supported icon set: https://fonts.google.com/icons
+                            "link": reverse_lazy("admin:blog_article_changelist"),
+
+                            # "permission": lambda request: request.user.is_superuser,
+                        },
+                        {
+                            "title": _("Категории"),
+                            "icon": "category",
+                            "link": reverse_lazy("admin:blog_category_changelist"),
+                        },
+                        {
+                            "title": _("Теги"),
+                            "icon": "bookmark",
+                            "link": reverse_lazy("admin:taggit_tag_changelist"),
+                        },
+                        {
+                            "title": _("Users"),
+                            "icon": "people",
+                            "link": reverse_lazy("admin:auth_user_changelist"),
+                        },
+                    ],
+                },
+                {
+                    "title": _("Комментарии, оценки"),
+                    "separator": True,  # Top border
+                    "collapsible": True,  # Collapsible group of links
+                    "items": [
+                        {
+                            "title": _("Комментарии"),
+                            "icon": "chat_bubble",
+                            "link": reverse_lazy("admin:comments_comment_changelist"),
+                        },
+                        {
+                            "title": _("Оценки"),
+                            "icon": "star",
+                            "link": reverse_lazy("admin:ratings_likedislike_changelist"),
+                        },
+                    ],
+                },
+                {
+                    "title": _("Пользователи и группы"),
+                    "separator": True,  # Top border
+                    "collapsible": True,  # Collapsible group of links
+                    "items": [
+                        {
+                            "title": _("Пользователи"),
+                            "icon": "people",
+                            "link": reverse_lazy("admin:auth_user_changelist"),
+                        },
+                        {
+                            "title": _("Группы"),
+                            "icon": "groups",
+                            "link": reverse_lazy("admin:auth_group_changelist"),
+                        },
+                        {
+                            "title": _("Профили"),
+                            "icon": "account_box",
+                            "link": reverse_lazy("admin:users_profile_changelist"),
+                        },
+                        {
+                            "title": _("Аккаунты"),
+                            "icon": "manage_accounts",
+                            "link": reverse_lazy("admin:account_emailaddress_changelist"),
+                        },
+                        {
+                            "title": _("Аккаунты в социальных сетях"),
+                            "icon": "share",
+                            "link": reverse_lazy("admin:socialaccount_socialaccount_changelist"),
+                        },
+                        {
+                            "title": _("Социальные приложения"),
+                            "icon": "login",
+                            "link": reverse_lazy("admin:socialaccount_socialaccount_changelist"),
+                        },
+                        {
+                            "title": _("Токены социальных приложений"),
+                            "icon": "token",
+                            "link": reverse_lazy("admin:socialaccount_socialtoken_changelist"),
+                        },
+                    ],
+                },
+            ],
+        },
     }
 
     X_FRAME_OPTIONS: str = "SAMEORIGIN"
