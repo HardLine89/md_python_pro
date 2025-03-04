@@ -181,7 +181,7 @@
                                                         class="fa-solid fa-calendar"></i> {{ comment.created_at|date:"d.m.Y H:i" }}</span>
                                             </small>
                                             <span class="badge badge-light">
-                                                <span class="text-muted">Ответов: {{ comment.children.count }}</span>
+                                                <span class="text-muted">Ответов: {{ comment.comment_set.count }}</span>
                                             </span>
                                         </div>
                                         <!-- Текст комментария -->
