@@ -1,10 +1,10 @@
 from django.contrib import admin
-
+from unfold.admin import ModelAdmin
 from comments.models import Comment
 
 
 @admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):
+class CommentAdmin(ModelAdmin):
     list_display = ("author", "created_at", "updated_at")
     list_filter = ("author", "created_at", "updated_at")
     search_fields = ("author", "text")

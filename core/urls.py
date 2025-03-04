@@ -30,6 +30,7 @@ urlpatterns = (
         path("", include("users.urls")),
         path("martor/", include("martor.urls")),
         path("accounts/", include("allauth.urls")),
+        path("mdeditor/", include("mdeditor.urls")),
     ]
     + static(config.STATIC_URL, document_root=config.STATIC_ROOT)
     + static(config.MEDIA_URL, document_root=config.MEDIA_ROOT)

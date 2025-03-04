@@ -3,10 +3,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.html import format_html
 from blog.models import Article, Category
 from ratings.models import LikeDislike
-
+from unfold.admin import ModelAdmin
 
 @admin.register(Article)
-class ArticleAdmin(admin.ModelAdmin):
+class ArticleAdmin(ModelAdmin):
     list_display = (
         "title",
         "category",
@@ -76,7 +76,7 @@ class ArticleAdmin(admin.ModelAdmin):
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(ModelAdmin):
     list_display = ("title", "created_at", "updated_at")
     search_fields = ("title",)
     list_per_page = 10
