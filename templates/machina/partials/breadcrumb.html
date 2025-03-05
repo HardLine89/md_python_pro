@@ -1,0 +1,16 @@
+{% load i18n %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'forum:index' %}" class="text-decoration-none text-reset"><i class="fas fa-home">&nbsp;</i>{% trans "Forum index" %}</a></li>
+    {% if forum %}
+    {% for ancestor in forum.get_ancestors %}
+    <li class="breadcrumb-item"><a href="{% url 'forum:forum' ancestor.slug ancestor.id %}" class="text-decoration-none text-reset">{{ ancestor.name }}</a></li>
+    {% endfor %}
+    <li class="breadcrumb-item"><a href="{% url 'forum:forum' forum.slug forum.id %}" class="text-decoration-none text-reset">{{ forum.name }}</a></li>
+    {% endif %}
+    {% if topic %}
+    <li class="breadcrumb-item"><a href="{% url 'forum_conversation:topic' forum.slug forum.id topic.slug topic.id %}" class="text-decoration-none text-reset">{{ topic.subject }}</a></li>
+    {% endif %}
+  </ol>
+</nav>

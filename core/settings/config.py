@@ -1,6 +1,7 @@
-from pathlib import Path
+import os
+from pathlib import Path, PosixPath
 from typing import List, Dict
-
+from machina import MACHINA_MAIN_TEMPLATE_DIR, MACHINA_MAIN_STATIC_DIR
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
@@ -66,6 +67,21 @@ class DjangoSettings(BaseSettings):
         "django.contrib.sessions",
         "django.contrib.messages",
         "django.contrib.staticfiles",
+        "mptt",
+        "haystack",
+        "widget_tweaks",
+        # Machina apps:
+        "machina",
+        "machina.apps.forum",
+        "machina.apps.forum_conversation",
+        "machina.apps.forum_conversation.forum_attachments",
+        "machina.apps.forum_conversation.forum_polls",
+        "machina.apps.forum_feeds",
+        "machina.apps.forum_moderation",
+        "machina.apps.forum_search",
+        "machina.apps.forum_tracking",
+        "machina.apps.forum_member",
+        "machina.apps.forum_permission",
         "blog",
         "utils",
         "ratings",
@@ -83,6 +99,7 @@ class DjangoSettings(BaseSettings):
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
         "allauth.account.middleware.AccountMiddleware",
         "django_htmx.middleware.HtmxMiddleware",
+        "machina.apps.forum_permission.middleware.ForumPermissionMiddleware",
     ]
 
     ROOT_URLCONF: str = "core.urls"
@@ -106,8 +123,8 @@ class DjangoSettings(BaseSettings):
     TEMPLATES: List[dict] = [
         {
             "BACKEND": "django.template.backends.django.DjangoTemplates",
-            "DIRS": ["templates"],
-            "APP_DIRS": True,
+            "DIRS": ["templates", "templates/machina", os.path.join(BASE_DIR, "templates/admin/"), MACHINA_MAIN_TEMPLATE_DIR,],
+            # "APP_DIRS": True,
             "OPTIONS": {
                 "context_processors": [
                     "django.template.context_processors.debug",
@@ -115,20 +132,33 @@ class DjangoSettings(BaseSettings):
                     "django.contrib.auth.context_processors.auth",
                     "django.contrib.messages.context_processors.messages",
                     "django.template.context_processors.request",
+                    "machina.core.context_processors.metadata",
                 ],
+                "loaders": [
+                    "django.template.loaders.filesystem.Loader",
+                    "django.template.loaders.app_directories.Loader",
+                ]
             },
         }
     ]
+    CACHES: dict = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        },
+        'machina_attachments': {
+            'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+            'LOCATION': '/tmp',
+        },
+    }
 
-    # CACHES: Dict[str, Dict[str, Any]] = {
-    #     "default": {
-    #         "BACKEND": "django_redis.cache.RedisCache",
-    #         "LOCATION": "redis://redis_md:6379/0",
-    #         "OPTIONS": {
-    #             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-    #         },
-    #     }
-    # }
+    HAYSTACK_CONNECTIONS: dict = {
+        'default': {
+            'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+        },
+    }
+    MACHINA_PROFILE_AVATARS_ENABLED: bool = False
+    MACHINA_FORUM_NAME: str = "Форум MDPython.pro"
+    MACHINA_MARKUP_LANGUAGE: tuple = ('markdown2.markdown', {'safe_mode': True, 'extras': {'break-on-newline': True, 'fenced-code-blocks': None}})
     # SESSION_ENGINE: str = "django.contrib.sessions.backends.cache"
     # SESSION_CACHE_ALIAS: str = "default"
     # SESSION_COOKIE_SECURE: bool = True
@@ -148,7 +178,9 @@ class DjangoSettings(BaseSettings):
     USE_TZ: bool = True
 
     STATIC_URL: str = "static/"
-    # STATICFILES_DIRS: List[PosixPath] = [BASE_DIR / "static"]
+    STATICFILES_DIRS: tuple = (
+        MACHINA_MAIN_STATIC_DIR,
+    )
     STATIC_ROOT: Path = BASE_DIR / "static"
 
     MEDIA_URL: str = "media/"
@@ -201,7 +233,7 @@ class DjangoSettings(BaseSettings):
                         "datetime", "iframe",
                         "emoji", "html-entities", "pagebreak", "goto-line", "|",
                         "help", "info",
-                        "||", "preview", "watch", "fullscreen"],  # custom edit box toolbar
+                        "||", "preview", "watch", "fullscreen"], # custom edit box toolbar
             "upload_image_formats": [
                 "jpg",
                 "jpeg",
@@ -271,7 +303,7 @@ class DjangoSettings(BaseSettings):
         "SHOW_VIEW_ON_SITE": True,  # show/hide "View on site" button, default: True
         "SHOW_BACK_BUTTON": False,
         "SIDEBAR": {
-            "show_search": False,  # Search in applications and models names
+            "show_search": True,  # Search in applications and models names
             "show_all_applications": False,  # Dropdown with all applications and models
             "navigation": [
                 {
@@ -288,7 +320,7 @@ class DjangoSettings(BaseSettings):
                 {
                     "title": _("Блог"),
                     "separator": True,  # Top border
-                    "collapsible": True,  # Collapsible group of links
+                    "collapsible": False,  # Collapsible group of links
                     "items": [
                         {
                             "title": _("Статьи"),
@@ -311,7 +343,7 @@ class DjangoSettings(BaseSettings):
                 {
                     "title": _("Комментарии, оценки"),
                     "separator": True,  # Top border
-                    "collapsible": True,  # Collapsible group of links
+                    "collapsible": False,  # Collapsible group of links
                     "items": [
                         {
                             "title": _("Комментарии"),
@@ -330,7 +362,7 @@ class DjangoSettings(BaseSettings):
                 {
                     "title": _("Пользователи и группы"),
                     "separator": True,  # Top border
-                    "collapsible": True,  # Collapsible group of links
+                    "collapsible": False,  # Collapsible group of links
                     "items": [
                         {
                             "title": _("Пользователи"),
@@ -365,7 +397,7 @@ class DjangoSettings(BaseSettings):
                             "title": _("Социальные приложения"),
                             "icon": "login",
                             "link": reverse_lazy(
-                                "admin:socialaccount_socialaccount_changelist"
+                                "admin:socialaccount_socialapp_changelist"
                             ),
                         },
                         {
@@ -377,6 +409,74 @@ class DjangoSettings(BaseSettings):
                         },
                     ],
                 },
+                {
+                    "title": _("Форум"),
+                    "separator": True,
+                    "collapsible": False,
+                    "items": [
+                        {
+                            "title": _("Ответы"),
+                            "icon": "post",
+                            "link": reverse_lazy("admin:forum_conversation_post_changelist"),
+                        },
+                        {
+                            "title": _("Темы"),
+                            "icon": "topic",
+                            "link": reverse_lazy("admin:forum_conversation_topic_changelist"),
+                        },
+                        {
+                            "title": _("Вложения"),
+                            "icon": "attachment",
+                            "link": reverse_lazy("admin:forum_attachments_attachment_changelist"),
+                        },
+                        {
+                            "title": _("Варианты опроса темы"),
+                            "icon": "ballot",
+                            "link": reverse_lazy("admin:forum_polls_topicpolloption_changelist"),
+                        },
+                        {
+                            "title": _("Голосования опроса темы"),
+                            "icon": "how_to_vote",
+                            "link": reverse_lazy("admin:forum_polls_topicpollvote_changelist"),
+                        },
+                        {
+                            "title": _("Опросы темы"),
+                            "icon": "where_to_vote",
+                            "link": reverse_lazy("admin:forum_polls_topicpoll_changelist"),
+                        },
+                        {
+                            "title": _("Отслеживания темы"),
+                            "icon": "eye_tracking",
+                            "link": reverse_lazy("admin:forum_tracking_topicreadtrack_changelist"),
+                        },
+                        {
+                            "title": _("Отслеживания форума"),
+                            "icon": "visibility",
+                            "link": reverse_lazy("admin:forum_tracking_forumreadtrack_changelist"),
+                        },
+                        {
+                            "title": _("Разрешения группы форума"),
+                            "icon": "groups",
+                            "link": reverse_lazy("admin:forum_permission_groupforumpermission_changelist"),
+                        },
+                        {
+                            "title": _("Разрешения форума"),
+                            "icon": "folder_managed",
+                            "link": reverse_lazy("admin:forum_permission_forumpermission_changelist"),
+                        },
+                        {
+                            "title": _("Форумные профили"),
+                            "icon": "person_add",
+                            "link": reverse_lazy("admin:forum_member_forumprofile_changelist"),
+                        },
+                        {
+                            "title": _("Форумы"),
+                            "icon": "forum",
+                            "link": reverse_lazy("admin:forum_forum_changelist"),
+                        },
+
+                    ]
+                 },
             ],
         },
     }
