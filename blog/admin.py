@@ -5,6 +5,7 @@ from blog.models import Article, Category
 from ratings.models import LikeDislike
 from unfold.admin import ModelAdmin
 
+
 @admin.register(Article)
 class ArticleAdmin(ModelAdmin):
     list_display = (
@@ -53,6 +54,22 @@ class ArticleAdmin(ModelAdmin):
         ),
         ("Даты", {"fields": ["created_at", "updated_at"]}),
     ]
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if "tags" in form.base_fields:
+            form.base_fields["tags"].widget.attrs.update(
+                {
+                    "class": "border border-base-200 bg-white font-medium min-w-20 placeholder-base-400 rounded "
+                             "shadow-sm text-font-default-light text-sm focus:ring focus:ring-primary-300 "
+                             "focus:border-primary-600 focus:outline-none group-[.errors]:border-red-600 group-["
+                             ".errors]:focus:ring-red-200 dark:bg-base-900 dark:border-base-700 "
+                             "dark:text-font-default-dark dark:focus:border-primary-600 dark:focus:ring-primary-700 "
+                             "dark:focus:ring-opacity-50 dark:group-[.errors]:border-red-500 dark:group-["
+                             ".errors]:focus:ring-red-600/40 px-3 py-2 w-full max-w-2xl"
+                }
+            )
+        return form
 
     def votes_info(self, obj):
         """

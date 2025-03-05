@@ -6,6 +6,8 @@ import unidecode
 from django.contrib.auth.models import User
 from allauth.account.signals import user_signed_up
 from django.dispatch import receiver
+from machina.apps.forum_member.models import ForumProfile
+
 from users.models import Profile
 
 
@@ -72,5 +74,7 @@ def download_avatar(url):
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+        ForumProfile.objects.create(user=instance)  # Создаем профиль на форуме
     else:
         instance.profile.save()  # Безопасно сохраняем профиль
+        ForumProfile.objects.get_or_create(user=instance)  # Проверяем, есть ли профиль на форуме

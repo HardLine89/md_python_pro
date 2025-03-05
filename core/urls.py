@@ -18,7 +18,7 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-
+from machina import urls as machina_urls
 from core.settings import config
 
 urlpatterns = (
@@ -31,6 +31,7 @@ urlpatterns = (
         path("martor/", include("martor.urls")),
         path("accounts/", include("allauth.urls")),
         path("mdeditor/", include("mdeditor.urls")),
+        path('forum/', include(machina_urls)),
     ]
     + static(config.STATIC_URL, document_root=config.STATIC_ROOT)
     + static(config.MEDIA_URL, document_root=config.MEDIA_ROOT)
