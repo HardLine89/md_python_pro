@@ -133,6 +133,7 @@ class DjangoSettings(BaseSettings):
                     "django.contrib.messages.context_processors.messages",
                     "django.template.context_processors.request",
                     "machina.core.context_processors.metadata",
+                    "utils.context_processors.common_context",
                 ],
                 "loaders": [
                     "django.template.loaders.filesystem.Loader",

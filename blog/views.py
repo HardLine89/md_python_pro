@@ -5,15 +5,13 @@ from django.db.models import Sum, Count, Q, F
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import ListView, DetailView
 from faker import Faker
 from taggit.models import Tag
 from blog.models import Article, Category
-from utils.view_mixins import CommonContextMixin
 
 
-class SearchListView(CommonContextMixin, ListView):
+class SearchListView(ListView):
     model = Article
     template_name = "blog/index.html"
     context_object_name = "articles"
@@ -63,7 +61,7 @@ class SearchListView(CommonContextMixin, ListView):
         return context
 
 
-class ArticleListView(CommonContextMixin, ListView):
+class ArticleListView(ListView):
     model = Article
     template_name = "blog/index.html"
     context_object_name = "articles"
@@ -107,7 +105,7 @@ class ArticleListView(CommonContextMixin, ListView):
         return context
 
 
-class ArticleDetailView(CommonContextMixin, DetailView):
+class ArticleDetailView(DetailView):
     model = Article
     template_name = "blog/article_detail.html"
     lookup_field = "slug"
@@ -144,7 +142,7 @@ class ArticleDetailView(CommonContextMixin, DetailView):
         return context
 
 
-class ArticleByCategoryView(CommonContextMixin, ListView):
+class ArticleByCategoryView(ListView):
     """Вывод всех статей по выбранной категории"""
 
     model = Article
@@ -194,7 +192,7 @@ class ArticleByCategoryView(CommonContextMixin, ListView):
         return context
 
 
-class ArticleByTagView(CommonContextMixin, ListView):
+class ArticleByTagView(ListView):
     """Вывод всех статей по выбранной категории"""
 
     model = Article

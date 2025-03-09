@@ -1,10 +1,15 @@
+from allauth.account.admin import EmailAddressAdmin, EmailConfirmationAdmin
+from allauth.account.models import EmailConfirmation, EmailAddress
+from allauth.socialaccount.admin import (
+    SocialAppAdmin,
+    SocialTokenAdmin,
+    SocialAccountAdmin,
+)
+from allauth.socialaccount.models import SocialApp, SocialToken, SocialAccount
 from django.contrib import admin
-from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
-from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
 from django.contrib.auth.models import User, Group
-from django.forms import CheckboxInput
 from machina.apps.forum.admin import ForumAdmin
 from machina.apps.forum.models import Forum
 from machina.apps.forum_conversation.admin import TopicAdmin, PostAdmin
@@ -26,6 +31,7 @@ from machina.apps.forum_member.models import ForumProfile
 from machina.apps.forum_permission.admin import (
     ForumPermissionAdmin,
     GroupForumPermissionAdmin,
+    UserForumPermissionAdmin,
 )
 from machina.apps.forum_permission.models import (
     ForumPermission,
@@ -88,76 +94,33 @@ class ProfileAdmin(ModelAdmin):
     readonly_fields = ("user",)
 
 
-admin.site.unregister(Forum)
-admin.site.unregister(Topic)
-admin.site.unregister(TopicPoll)
-admin.site.unregister(TopicPollOption)
-admin.site.unregister(TopicPollVote)
-admin.site.unregister(ForumProfile)
-admin.site.unregister(ForumPermission)
-admin.site.unregister(GroupForumPermission)
-admin.site.unregister(UserForumPermission)
-admin.site.unregister(ForumReadTrack)
-admin.site.unregister(TopicReadTrack)
-admin.site.unregister(Post)
-admin.site.unregister(Attachment)
+models_to_register = {
+    Forum: ForumAdmin,
+    Topic: TopicAdmin,
+    TopicPoll: TopicPollAdmin,
+    TopicPollOption: TopicPollOptionAdmin,
+    TopicPollVote: TopicPollVoteAdmin,
+    ForumProfile: ForumProfileAdmin,
+    ForumPermission: ForumPermissionAdmin,
+    GroupForumPermission: GroupForumPermissionAdmin,
+    UserForumPermission: UserForumPermissionAdmin,
+    ForumReadTrack: ForumReadTrackAdmin,
+    TopicReadTrack: TopicReadTrackAdmin,
+    Post: PostAdmin,
+    Attachment: AttachmentAdmin,
+    SocialApp: SocialAppAdmin,
+    SocialToken: SocialTokenAdmin,
+    SocialAccount: SocialAccountAdmin,
+    EmailAddress: EmailAddressAdmin,
+}
 
+# Удаляем стандартные регистрации
+for model in models_to_register.keys():
+    admin.site.unregister(model)
 
-@admin.register(Forum)
-class CustomForumAdmin(BaseModelAdminMixin, ForumAdmin):
-    pass
+# Регистрируем кастомные админ-классы
+for model, admin_class in models_to_register.items():
 
-
-@admin.register(Topic)
-class CustomForumAdmin(BaseModelAdminMixin, TopicAdmin):
-    pass
-
-
-@admin.register(TopicPoll)
-class CustomForumAdmin(BaseModelAdminMixin, TopicPollAdmin):
-    pass
-
-
-@admin.register(TopicPollOption)
-class CustomForumAdmin(BaseModelAdminMixin, TopicPollOptionAdmin):
-    pass
-
-
-@admin.register(TopicPollVote)
-class CustomForumAdmin(BaseModelAdminMixin, TopicPollVoteAdmin):
-    pass
-
-
-@admin.register(ForumProfile)
-class CustomForumAdmin(BaseModelAdminMixin, ForumProfileAdmin):
-    pass
-
-
-@admin.register(ForumPermission)
-class CustomForumAdmin(BaseModelAdminMixin, ForumPermissionAdmin):
-    pass
-
-
-@admin.register(GroupForumPermission)
-class CustomForumAdmin(BaseModelAdminMixin, GroupForumPermissionAdmin):
-    pass
-
-
-@admin.register(ForumReadTrack)
-class CustomForumAdmin(BaseModelAdminMixin, ForumReadTrackAdmin):
-    pass
-
-
-@admin.register(TopicReadTrack)
-class CustomForumAdmin(BaseModelAdminMixin, TopicReadTrackAdmin):
-    pass
-
-
-@admin.register(Post)
-class CustomForumAdmin(BaseModelAdminMixin, PostAdmin):
-    pass
-
-
-@admin.register(Attachment)
-class CustomForumAdmin(BaseModelAdminMixin, AttachmentAdmin):
-    pass
+    @admin.register(model)
+    class CustomAdmin(ModelAdmin, admin_class):
+        pass
