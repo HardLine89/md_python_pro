@@ -134,6 +134,7 @@ class DjangoSettings(BaseSettings):
                     "django.template.context_processors.request",
                     "machina.core.context_processors.metadata",
                     "utils.context_processors.common_context",
+                    "utils.context_processors.forum_context",
                 ],
                 "loaders": [
                     "django.template.loaders.filesystem.Loader",

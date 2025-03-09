@@ -94,6 +94,43 @@
             </div>
         </div>
     </div>
+    <div class="card mb-5">
+        <div class="card-header">
+            <h5 class="text-center">Активные темы форума</h5>
+        </div>
+        <div class="card-body p-1">
+            <ul class="list-group list-group-flush">
+                {% for topic in recent_topics %}
+                    <li class="list-group-item border-bottom p-3"> <!-- Добавляем отступы и границу -->
+                        <div class="d-flex align-items-start"> <!-- Используем flex для выравнивания -->
+                            <!-- Аватарка -->
+                            <img src="{{ topic.poster.profile.avatar.url }}" alt="{{ topic.poster.username }}"
+                                 class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                            <!-- Круглая аватарка -->
+
+                            <!-- Текст комментария -->
+                            <div class="flex-grow-1">
+                                <!-- Ссылка на статью -->
+                                <small class="text-muted">
+                                    <a href="{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}"
+                                       class="text-decoration-none text-reset">
+                                        {{ topic.subject|truncatewords:5 }}
+                                    </a>
+                                </small>
+
+                                <!-- Имя автора и текст комментария -->
+                                <small class="d-block justify-content-between">
+                                    <span class="badge {% if topic.poster.is_staff %}badge-success{% else %}badge-secondary{% endif %} fw-bold mb-0 me-2">{{ topic.poster.username }}</span>
+                                    <span class="text-muted ms-auto">{{ topic.created_at|date:"d.m.Y H:i" }}</span>
+                                </small>
+
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
     <div class="card mb-5" style="position: sticky;
                                   top: 90px; /* Отступ от верха, чтобы не перекрывать navbar */
                                   z-index: 1020; /* Чтобы оставаться выше других элементов */">
